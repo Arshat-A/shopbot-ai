@@ -1,0 +1,20 @@
+[
+  {
+    "product": "2 Door Cupboard",
+    "price": "\u20b911000",
+    "customer_name": "arshat",
+    "customer_phone": "1234567999",
+    "id": "EC23D24A",
+    "timestamp": "21 Jun 2026, 04:37 PM",
+    "status": "delivered"
+  },
+  {
+    "product": "Office Table",
+    "price": "\u20b95500",
+    "customer_name": "arshat",
+    "customer_phone": "1234567999",
+    "id": "F6712040",
+    "timestamp": "22 Jun 2026, 12:07 PM",
+    "status": "delivered"
+  }
+]

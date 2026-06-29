@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ShopBot AI — Royal Enterprises</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .typing-dot { animation: bounce 1s infinite; }
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+    .chat-bubble { animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen font-sans">
+
+  <!-- Header -->
+  <div class="bg-green-700 text-white shadow-lg">
+    <div class="max-w-xl mx-auto px-4 py-4 flex items-center gap-3">
+      <div class="bg-white rounded-full w-10 h-10 flex items-center justify-center text-green-700 font-bold text-lg shadow">R</div>
+      <div>
+        <h1 class="text-lg font-bold leading-tight">Royal Enterprises</h1>
+        <p class="text-xs opacity-75">Dommasandra, Sarjapur Road, Bangalore</p>
+      </div>
+      <div class="ml-auto text-right">
+        <span class="text-xs bg-green-500 px-2 py-1 rounded-full">🤖 ShopBot AI</span>
+        <p class="text-xs opacity-60 mt-1">by Neurix</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="max-w-xl mx-auto px-4 mt-4 flex gap-3">
+    <button onclick="showTab('chat')" id="tab-chat"
+      class="flex-1 py-2 rounded-xl bg-green-700 text-white font-semibold shadow text-sm">
+      💬 Customer Chat
+    </button>
+    <button onclick="showTab('owner')" id="tab-owner"
+      class="flex-1 py-2 rounded-xl bg-white text-green-700 font-semibold shadow border border-green-200 text-sm">
+      🏪 Owner Dashboard
+    </button>
+  </div>
+
+  <!-- CHAT TAB -->
+  <div id="chat-tab" class="max-w-xl mx-auto mt-3 px-4 flex flex-col" style="height: calc(100vh - 200px)">
+    <div id="chat-box" class="bg-white rounded-2xl shadow-sm border border-gray-100 flex-1 overflow-y-auto p-4 flex flex-col gap-3">
+      <div class="chat-bubble flex gap-2 items-start">
+        <div class="bg-green-700 text-white rounded-full w-7 h-7 flex items-center justify-center text-xs font-bold flex-shrink-0">R</div>
+        <div class="bg-green-50 border border-green-100 text-gray-800 rounded-2xl rounded-tl-none px-4 py-3 max-w-xs text-sm">
+          👋 Hi! I'm ShopBot, your assistant at <strong>Royal Enterprises</strong>. Ask me about our furniture — wardrobes, tables, cots, mandirs and more!
+        </div>
+      </div>
+      <div id="quick-replies" class="flex flex-wrap gap-2 mt-1">
+        <button onclick="quickSend('What products do you have?')" class="text-xs bg-white border border-green-300 text-green-700 px-3 py-1.5 rounded-full hover:bg-green-50">📦 View Products</button>
+        <button onclick="quickSend('What is your cheapest product?')" class="text-xs bg-white border border-green-300 text-green-700 px-3 py-1.5 rounded-full hover:bg-green-50">💰 Budget Options</button>
+        <button onclick="quickSend('I need a wardrobe')" class="text-xs bg-white border border-green-300 text-green-700 px-3 py-1.5 rounded-full hover:bg-green-50">🗄️ Wardrobes</button>
+        <button onclick="quickSend('Show me office furniture')" class="text-xs bg-white border border-green-300 text-green-700 px-3 py-1.5 rounded-full hover:bg-green-50">🖥️ Office</button>
+      </div>
+    </div>
+    <div class="flex mt-3 gap-2 pb-4">
+      <input id="user-input" type="text"
+        placeholder="Ask about products, prices, orders..."
+        class="flex-1 border border-gray-200 rounded-full px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-400 bg-white shadow-sm"
+        onkeydown="if(event.key==='Enter') sendMessage()" />
+      <button onclick="sendMessage()"
+        class="bg-green-700 text-white px-5 py-2.5 rounded-full font-semibold hover:bg-green-800 shadow text-sm transition">
+        Send
+      </button>
+    </div>
+  </div>
+
+  <!-- OWNER TAB -->
+  <div id="owner-tab" class="max-w-xl mx-auto mt-3 px-4 hidden pb-8">
+
+    <!-- Add Product -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 mb-4">
+      <h2 class="text-base font-bold text-gray-700 mb-3">➕ Add Product</h2>
+      <input id="p-name" type="text" placeholder="Product Name"
+        class="w-full border border-gray-200 rounded-xl px-3 py-2 mb-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-400"/>
+      <input id="p-price" type="number" placeholder="Price (₹)"
+        class="w-full border border-gray-200 rounded-xl px-3 py-2 mb-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-400"/>
+      <input id="p-category" type="text" placeholder="Category (e.g. Furniture)"
+        class="w-full border border-gray-200 rounded-xl px-3 py-2 mb-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-400"/>
+      <textarea id="p-desc" placeholder="Short description (size, material, color options)"
+        class="w-full border border-gray-200 rounded-xl px-3 py-2 mb-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-400"
+        rows="2"></textarea>
+      <div class="border-2 border-dashed border-gray-200 rounded-xl p-4 mb-3 text-center cursor-pointer hover:border-green-400 transition"
+        onclick="document.getElementById('p-image').click()">
+        <div id="image-preview-container">
+          <p class="text-gray-400 text-sm">📷 Click to upload product image</p>
+          <p class="text-gray-300 text-xs mt-1">JPG, PNG supported</p>
+        </div>
+        <img id="image-preview" class="hidden mx-auto max-h-32 rounded-lg mt-2" />
+      </div>
+      <input id="p-image" type="file" accept="image/*" class="hidden" onchange="previewImage(event)"/>
+      <button onclick="addProduct()"
+        class="w-full bg-green-700 text-white py-2.5 rounded-xl font-semibold hover:bg-green-800 text-sm transition">
+        Add to Catalogue
+      </button>
+      <p id="add-status" class="text-center text-sm mt-2 font-medium"></p>
+    </div>
+
+    <!-- Catalogue List -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
+      <h2 class="text-base font-bold text-gray-700 mb-3">📦 Current Catalogue <span id="product-count" class="text-green-600 font-normal text-sm"></span></h2>
+      <div id="catalogue-list" class="flex flex-col gap-3">
+        <p class="text-gray-400 text-sm">Loading...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Modal -->
+  <div id="edit-modal" class="hidden fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 px-4">
+    <div class="bg-white rounded-2xl shadow-xl p-5 w-full max-w-sm">
+      <h2 class="text-base font-bold text-gray-700 mb-3">✏️ Edit Product</h2>
+      <input type="hidden" id="edit-index" />
+      <input id="edit-name" type="text" placeholder="Product Name"
+        class="w-full border border-gray-200 rounded-xl px-3 py-2 mb-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-400"/>
+      <input id="edit-price" type="number" placeholder="Price (₹)"
+        class="w-full border border-gray-200 rounded-xl px-3 py-2 mb-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-400"/>
+      <input id="edit-category" type="text" placeholder="Category"
+        class="w-full border border-gray-200 rounded-xl px-3 py-2 mb-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-400"/>
+      <textarea id="edit-desc" placeholder="Description"
+        class="w-full border border-gray-200 rounded-xl px-3 py-2 mb-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-400"
+        rows="2"></textarea>
+      <div class="border-2 border-dashed border-gray-200 rounded-xl p-3 mb-3 text-center cursor-pointer hover:border-green-400 transition"
+        onclick="document.getElementById('edit-image').click()">
+        <p class="text-gray-400 text-xs">📷 Click to change image (optional)</p>
+      </div>
+      <input id="edit-image" type="file" accept="image/*" class="hidden"/>
+      <div class="flex gap-2">
+        <button onclick="closeEdit()"
+          class="flex-1 py-2 rounded-xl border border-gray-200 text-gray-500 text-sm hover:bg-gray-50">Cancel</button>
+        <button onclick="saveEdit()"
+          class="flex-1 py-2 rounded-xl bg-green-700 text-white text-sm font-semibold hover:bg-green-800">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let chatHistory = []
+
+    // --- Tabs ---
+    function showTab(tab) {
+      document.getElementById('chat-tab').classList.add('hidden')
+      document.getElementById('owner-tab').classList.add('hidden')
+      document.getElementById('tab-chat').className = 'flex-1 py-2 rounded-xl bg-white text-green-700 font-semibold shadow border border-green-200 text-sm'
+      document.getElementById('tab-owner').className = 'flex-1 py-2 rounded-xl bg-white text-green-700 font-semibold shadow border border-green-200 text-sm'
+      document.getElementById(tab + '-tab').classList.remove('hidden')
+      document.getElementById('tab-' + tab).className = 'flex-1 py-2 rounded-xl bg-green-700 text-white font-semibold shadow text-sm'
+      if (tab === 'owner') loadCatalogue()
+    }
+
+    // --- Quick Send ---
+    function quickSend(text) {
+      document.getElementById('user-input').value = text
+      document.getElementById('quick-replies')?.remove()
+      sendMessage()
+    }
+
+    // --- Image Preview ---
+    function previewImage(event) {
+      const file = event.target.files[0]
+      if (!file) return
+      const preview = document.getElementById('image-preview')
+      const container = document.getElementById('image-preview-container')
+      preview.src = URL.createObjectURL(file)
+      preview.classList.remove('hidden')
+      container.innerHTML = '<p class="text-green-600 text-xs font-medium">✅ Image selected</p>'
+    }
+
+    // --- Chat ---
+    async function sendMessage() {
+      const input = document.getElementById('user-input')
+      const message = input.value.trim()
+      if (!message) return
+
+      appendMessage(message, 'user')
+      input.value = ''
+      showTyping()
+
+      chatHistory.push({ role: 'user', content: message })
+
+      try {
+        const res = await fetch('/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message, history: chatHistory.slice(0, -1) })
+        })
+        const data = await res.json()
+        removeTyping()
+        appendMessage(data.reply, 'bot', data.image)
+        chatHistory.push({ role: 'assistant', content: data.reply })
+      } catch (err) {
+        removeTyping()
+        appendMessage('Sorry, something went wrong. Please try again.', 'bot')
+      }
+    }
+
+    function appendMessage(text, sender, imageUrl = null) {
+      const box = document.getElementById('chat-box')
+      const div = document.createElement('div')
+      div.className = 'chat-bubble flex gap-2 items-start ' + (sender === 'user' ? 'justify-end' : '')
+
+      if (sender === 'user') {
+        div.innerHTML = `<div class="bg-green-700 text-white rounded-2xl rounded-tr-none px-4 py-2.5 max-w-xs text-sm">${text}</div>`
+      } else {
+        const imageHtml = imageUrl
+          ? `<img src="${imageUrl}" class="rounded-xl mt-2 max-w-full border border-gray-100 shadow-sm" style="max-height:200px; object-fit:cover;" />`
+          : ''
+        div.innerHTML = `
+          <div class="bg-green-700 text-white rounded-full w-7 h-7 flex items-center justify-center text-xs font-bold flex-shrink-0">R</div>
+          <div class="bg-gray-50 border border-gray-100 text-gray-800 rounded-2xl rounded-tl-none px-4 py-3 max-w-xs text-sm whitespace-pre-line">
+            ${text}${imageHtml}
+          </div>`
+      }
+      box.appendChild(div)
+      box.scrollTop = box.scrollHeight
+    }
+
+    function showTyping() {
+      const box = document.getElementById('chat-box')
+      const div = document.createElement('div')
+      div.id = 'typing-indicator'
+      div.className = 'chat-bubble flex gap-2 items-start'
+      div.innerHTML = `
+        <div class="bg-green-700 text-white rounded-full w-7 h-7 flex items-center justify-center text-xs font-bold flex-shrink-0">R</div>
+        <div class="bg-gray-50 border border-gray-100 rounded-2xl rounded-tl-none px-4 py-3 flex gap-1">
+          <span class="typing-dot w-2 h-2 bg-gray-400 rounded-full inline-block"></span>
+          <span class="typing-dot w-2 h-2 bg-gray-400 rounded-full inline-block"></span>
+          <span class="typing-dot w-2 h-2 bg-gray-400 rounded-full inline-block"></span>
+        </div>`
+      box.appendChild(div)
+      box.scrollTop = box.scrollHeight
+    }
+
+    function removeTyping() {
+      document.getElementById('typing-indicator')?.remove()
+    }
+
+    // --- Add Product ---
+    async function addProduct() {
+      const name = document.getElementById('p-name').value.trim()
+      const price = document.getElementById('p-price').value.trim()
+      const category = document.getElementById('p-category').value.trim()
+      const description = document.getElementById('p-desc').value.trim()
+      const imageFile = document.getElementById('p-image').files[0]
+      const status = document.getElementById('add-status')
+
+      if (!name || !price || !category || !description) {
+        status.innerText = '⚠️ Please fill all fields'
+        status.className = 'text-center text-sm mt-2 text-red-500 font-medium'
+        return
+      }
+
+      const formData = new FormData()
+      formData.append('name', name)
+      formData.append('price', parseFloat(price))
+      formData.append('category', category)
+      formData.append('description', description)
+      if (imageFile) formData.append('image', imageFile)
+
+      const res = await fetch('/catalogue', { method: 'POST', body: formData })
+      const data = await res.json()
+
+      if (data.status === 'added') {
+        status.innerText = '✅ Product added!'
+        status.className = 'text-center text-sm mt-2 text-green-600 font-medium'
+        document.getElementById('p-name').value = ''
+        document.getElementById('p-price').value = ''
+        document.getElementById('p-category').value = ''
+        document.getElementById('p-desc').value = ''
+        document.getElementById('p-image').value = ''
+        document.getElementById('image-preview').classList.add('hidden')
+        document.getElementById('image-preview-container').innerHTML = '<p class="text-gray-400 text-sm">📷 Click to upload product image</p><p class="text-gray-300 text-xs mt-1">JPG, PNG supported</p>'
+        loadCatalogue()
+        setTimeout(() => status.innerText = '', 3000)
+      }
+    }
+
+    // --- Load Catalogue ---
+    async function loadCatalogue() {
+      const res = await fetch('/catalogue')
+      const products = await res.json()
+      const list = document.getElementById('catalogue-list')
+      const count = document.getElementById('product-count')
+
+      count.innerText = `(${products.length} items)`
+
+      if (products.length === 0) {
+        list.innerHTML = '<p class="text-gray-400 text-sm">No products yet.</p>'
+        return
+      }
+
+      list.innerHTML = products.map((p, i) => `
+        <div class="border border-gray-100 rounded-xl p-3 ${p.out_of_stock ? 'opacity-60 bg-gray-50' : 'bg-white'} transition">
+          <div class="flex justify-between items-start">
+            <div class="flex gap-3 items-start flex-1">
+              ${p.image
+                ? `<img src="${p.image}" class="w-14 h-14 rounded-lg object-cover border border-gray-100 flex-shrink-0" />`
+                : `<div class="w-14 h-14 rounded-lg bg-gray-100 flex items-center justify-center text-2xl flex-shrink-0">📦</div>`}
+              <div class="flex-1">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <p class="font-semibold text-gray-700 text-sm">${p.name}</p>
+                  ${p.out_of_stock
+                    ? `<span class="text-xs bg-red-100 text-red-500 px-2 py-0.5 rounded-full">Out of Stock</span>`
+                    : `<span class="text-xs bg-green-100 text-green-600 px-2 py-0.5 rounded-full">In Stock</span>`}
+                </div>
+                <p class="text-xs text-green-600 font-medium mt-0.5">₹${p.price.toLocaleString('en-IN')}</p>
+                <p class="text-xs text-gray-400 mt-0.5">${p.description}</p>
+              </div>
+            </div>
+            <button onclick="deleteProduct(${i})" class="text-red-400 hover:text-red-600 text-lg ml-2 flex-shrink-0">🗑</button>
+          </div>
+          <div class="flex gap-2 mt-2">
+            <button onclick="toggleStock(${i})"
+              class="flex-1 text-xs py-1.5 rounded-lg border transition font-medium
+              ${p.out_of_stock
+                ? 'border-green-300 text-green-600 hover:bg-green-50'
+                : 'border-red-200 text-red-400 hover:bg-red-50'}">
+              ${p.out_of_stock ? '✅ Mark In Stock' : '⛔ Mark Out of Stock'}
+            </button>
+            <button onclick="openEdit(${i})"
+              class="flex-1 text-xs py-1.5 rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 transition font-medium">
+              ✏️ Edit
+            </button>
+          </div>
+        </div>
+      `).join('')
+    }
+
+    // --- Toggle Stock ---
+    async function toggleStock(index) {
+      await fetch(`/catalogue/${index}/stock`, { method: 'PATCH' })
+      loadCatalogue()
+    }
+
+    // --- Delete ---
+    async function deleteProduct(index) {
+      if (!confirm('Remove this product?')) return
+      await fetch(`/catalogue/${index}`, { method: 'DELETE' })
+      loadCatalogue()
+    }
+
+    // --- Edit ---
+    function openEdit(index) {
+      fetch('/catalogue')
+        .then(r => r.json())
+        .then(products => {
+          const p = products[index]
+          document.getElementById('edit-index').value = index
+          document.getElementById('edit-name').value = p.name
+          document.getElementById('edit-price').value = p.price
+          document.getElementById('edit-category').value = p.category
+          document.getElementById('edit-desc').value = p.description
+          document.getElementById('edit-image').value = ''
+          document.getElementById('edit-modal').classList.remove('hidden')
+        })
+    }
+
+    function closeEdit() {
+      document.getElementById('edit-modal').classList.add('hidden')
+    }
+
+    async function saveEdit() {
+      const index = document.getElementById('edit-index').value
+      const formData = new FormData()
+      formData.append('name', document.getElementById('edit-name').value)
+      formData.append('price', parseFloat(document.getElementById('edit-price').value))
+      formData.append('category', document.getElementById('edit-category').value)
+      formData.append('description', document.getElementById('edit-desc').value)
+      const imageFile = document.getElementById('edit-image').files[0]
+      if (imageFile) formData.append('image', imageFile)
+
+      await fetch(`/catalogue/${index}`, { method: 'PUT', body: formData })
+      closeEdit()
+      loadCatalogue()
+    }
+  </script>
+</body>
+</html>

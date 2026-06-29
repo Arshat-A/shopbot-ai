@@ -1,0 +1,59 @@
+[
+  {
+    "name": "Wardrobe",
+    "price": 10500,
+    "category": "Furniture",
+    "description": "3/6 feet size wardrobe, available in different colors",
+    "out_of_stock": false
+  },
+  {
+    "name": "Dressing Table",
+    "price": 4000,
+    "category": "Furniture",
+    "description": "Available from \u00e2\u201a\u00b94000 to \u00e2\u201a\u00b97500, multiple sizes and designs",
+    "out_of_stock": false
+  },
+  {
+    "name": "Office Table",
+    "price": 5500,
+    "category": "Furniture",
+    "description": "2/4 feet size office table, sturdy and spacious"
+  },
+  {
+    "name": "Diwaan",
+    "price": 6000,
+    "category": "Furniture",
+    "description": "2 door, 2.5/6 feet size diwaan, great for living rooms"
+  },
+  {
+    "name": "MDF Folding Cot",
+    "price": 5000,
+    "category": "Furniture",
+    "description": "4/6 feet size folding cot, space saving and sturdy"
+  },
+  {
+    "name": "Book Box",
+    "price": 2800,
+    "category": "Furniture",
+    "description": "2/2 feet size book box, perfect for storage"
+  },
+  {
+    "name": "TV Table",
+    "price": 5200,
+    "category": "Furniture",
+    "description": "4 feet TV table, modern design with storage space"
+  },
+  {
+    "name": "Mandir",
+    "price": 2800,
+    "category": "Furniture",
+    "description": "Available from \u00e2\u201a\u00b92800 to \u00e2\u201a\u00b910500, multiple sizes and designs"
+  },
+  {
+    "name": "2 Door Cupboard",
+    "price": 11000.0,
+    "category": "furniture",
+    "description": "mdf cupboard it has 2 door and 3/6 feet in size available in 4 colors black ,wooden ,white marbel , tomato colours",
+    "image": "/static/uploads/a209fc6abcf2489da9a512302021a50f.png"
+  }
+]
