@@ -13,7 +13,7 @@ from datetime import datetime
 
 app = FastAPI()
 
-GROQ_API_KEY = os.getenv("GROQ_API_KEY", "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")
+GROQ_API_KEY = os.getenv("GROQ_API_KEY", ",")
 CATALOGUE_FILE = "catalogue.json"
 ORDERS_FILE = "orders.json"
 UPLOAD_DIR = "static/uploads"
