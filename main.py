@@ -13,7 +13,7 @@ from datetime import datetime
 
 app = FastAPI()
 
-GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
+GROQ_API_KEY = os.getenv("GROQ_API_KEY", "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")
 CATALOGUE_FILE = "catalogue.json"
 ORDERS_FILE = "orders.json"
 UPLOAD_DIR = "static/uploads"
@@ -222,8 +222,59 @@ def chat(req: ChatRequest):
 
     system_prompt = f"""You are ShopBot, a friendly AI sales assistant for Royal Enterprises — a ready-made furniture retail shop in Dommasandra, Sarjapur Road, Bangalore.
 
+SHOP CONTACT DETAILS (use these when customer asks how to contact, never use customer's own number):
+- Phone: +91 8553537786
+- Address: Royal Enterprises, Dommasandra, Sarjapur Road, Bangalore
+- Timings: 10 AM to 9 PM, all days
+
 You help customers find products, answer questions about prices, and confirm orders.
 Always respond in a helpful, warm, conversational tone. Use ₹ for prices.
+{f"You are talking to: {customer_info}" if customer_info else ""}
+
+CRITICAL: When a customer asks how to contact or asks for shop number — always give the SHOP contact details above, NEVER the customer's own phone number.
+
+IMPORTANT: Only recommend products that exist in the catalogue below. Never mention products not in the catalogue.
+If a product has out_of_stock: True, tell the customer it is currently unavailable and suggest the closest alternative.
+Remember the full conversation context.
+
+BUDGET RECOMMENDATIONS:
+If a customer mentions a budget (e.g. "I have ₹8000" or "under ₹15000" or "what can I get for ₹10000"):
+1. Look through the catalogue for products within that budget
+2. Suggest the best single item OR a smart combo (e.g. Dressing Table + Shoe Box) that fits the budget
+3. Show total cost of the combo
+4. Explain why this combo is a good choice
+5. Ask if they want to order any of it
+Example: Customer says "I have ₹7000" → suggest Dressing Table ₹4000 + Shoe Box ₹2800 = ₹6800 total, fits budget perfectly.
+
+MULTILINGUAL:
+Detect the language the customer is writing in. If they write in Hindi, reply in Hindi. If Kannada, reply in Kannada. If English, reply in English. If mixed, reply in English.
+
+PRODUCT COMPARISON:
+If customer asks to compare two products (e.g. "compare wardrobe and cupboard"):
+- DO NOT use markdown tables or | symbols — they don't render in chat
+- Format comparison like this:
+
+🪑 WARDROBE
+- Price: ₹10,500
+- Size: 3/6 feet
+- Best for: Large storage needs
+
+🪑 CUPBOARD
+- Price: ₹11,000
+- Size: 3/6 feet
+- Best for: Bedroom storage
+
+✅ Our recommendation: [give honest recommendation based on their needs]
+
+- Give a recommendation based on their needs
+
+When a customer confirms a purchase, respond with a clear order summary and add this exact line at the end:
+PLACE_ORDER:[product name]|[price]
+
+
+You help customers find products, answer questions about prices, and confirm orders.
+Always respond in a helpful, warm, conversational tone. Use ₹ for prices.
+CRITICAL: When a customer asks "how to contact you" or "shop number" or "your number" — always give the SHOP contact details above, NEVER the customer's own phone number.
 {f"You are talking to: {customer_info}" if customer_info else ""}
 IMPORTANT: Only recommend products that exist in the catalogue below. Never mention products not in the catalogue.
 If a product has out_of_stock: True, tell the customer it is currently unavailable and suggest the closest alternative.
@@ -449,3 +500,28 @@ async def confirm_scan(req: StockConfirmRequest):
         "not_found": not_found,
         "message": f"{len(updated)} item(s) updated in inventory."
     }
+# --- QR Code Generator ---
+import qrcode
+import io
+from fastapi.responses import StreamingResponse
+
+@app.get("/generate-qr")
+def generate_qr(url: str = "https://shopbot-ai-1009.onrender.com"):
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_H,
+        box_size=10,
+        border=4,
+    )
+    qr.add_data(url)
+    qr.make(fit=True)
+
+    img = qr.make_image(fill_color="#3D2B1F", back_color="#FDF6ED")
+
+    buf = io.BytesIO()
+    img.save(buf, format="PNG")
+    buf.seek(0)
+
+    return StreamingResponse(buf, media_type="image/png", headers={
+        "Content-Disposition": "inline; filename=shopbot-qr.png"
+    })

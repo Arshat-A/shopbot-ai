@@ -1108,6 +1108,38 @@
             <div class="stat-label">Pending Orders</div>
           </div>
         </div>
+
+      <!-- QR Code Card -->
+      <div class="card" style="margin-bottom:28px;">
+        <div class="card-header">
+          <div class="card-title">📱 Shop QR Code</div>
+          <div style="font-size:13px;color:var(--text-light);">Print & stick anywhere</div>
+        </div>
+        <div class="card-body" style="display:flex;align-items:center;gap:28px;flex-wrap:wrap;">
+          <img id="qr-img" src="/generate-qr" alt="Shop QR Code"
+            style="width:140px;height:140px;border-radius:12px;border:2px solid rgba(201,168,76,0.2);"/>
+          <div>
+            <div style="font-family:'Playfair Display',serif;font-size:16px;font-weight:600;color:var(--brown);margin-bottom:6px;">
+              Royal Enterprises
+            </div>
+            <div style="font-size:13px;color:var(--text-light);margin-bottom:4px;">
+              📍 Dommasandra, Sarjapur Road, Bangalore
+            </div>
+            <div style="font-size:12px;color:var(--text-light);margin-bottom:16px;">
+              Scan to browse our catalogue & chat with ShopBot
+            </div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+              <a href="/generate-qr" download="royal-enterprises-qr.png"
+                style="background:var(--brown);color:var(--gold);padding:10px 20px;border-radius:10px;font-size:13px;font-weight:600;text-decoration:none;font-family:'Inter',sans-serif;">
+                ⬇️ Download QR
+              </a>
+              <button onclick="printQR()"
+                style="background:transparent;border:1.5px solid rgba(201,168,76,0.3);color:var(--brown-light);padding:10px 20px;border-radius:10px;font-size:13px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;">
+                🖨️ Print QR
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Catalogue Tab -->
@@ -1742,6 +1774,28 @@
         <div class="scanner-upload-text">Upload Warehouse Photo</div>
         <div class="scanner-upload-sub">Click to select image — JPG, PNG supported</div>`
     }
+    function printQR() {
+  const win = window.open('', '_blank')
+  win.document.write(`
+    <html><head><title>Royal Enterprises — QR Code</title>
+    <style>
+      body { font-family: 'Inter', sans-serif; display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; margin:0; background:#FDF6ED; }
+      img { width:280px; height:280px; border:3px solid #3D2B1F; border-radius:16px; margin-bottom:20px; }
+      h2 { font-family: Georgia, serif; color:#3D2B1F; margin-bottom:8px; font-size:24px; }
+      p { color:#8B6F5E; font-size:14px; margin:4px 0; }
+      .url { color:#C9A84C; font-size:12px; margin-top:12px; }
+    </style></head>
+    <body>
+      <img src="/generate-qr"/>
+      <h2>Royal Enterprises</h2>
+      <p>📍 Dommasandra, Sarjapur Road, Bangalore</p>
+      <p>Scan to browse our catalogue & order furniture</p>
+      <p class="url">shopbot-ai-1009.onrender.com</p>
+      <script>window.onload = () => window.print()<\/script>
+    </body></html>
+  `)
+  win.document.close()
+}
   </script>
 </body>
 </html>

@@ -4,14 +4,18 @@
     "price": 10500,
     "category": "Furniture",
     "description": "3/6 feet size wardrobe, available in different colors",
-    "out_of_stock": false
+    "out_of_stock": false,
+    "last_scanned_count": 1,
+    "last_scanned_at": "29 Jun 2026, 07:52 PM"
   },
   {
     "name": "Dressing Table",
     "price": 4000,
     "category": "Furniture",
     "description": "Available from \u00e2\u201a\u00b94000 to \u00e2\u201a\u00b97500, multiple sizes and designs",
-    "out_of_stock": false
+    "out_of_stock": false,
+    "last_scanned_count": 1,
+    "last_scanned_at": "29 Jun 2026, 08:00 PM"
   },
   {
     "name": "Office Table",
@@ -54,6 +58,17 @@
     "price": 11000.0,
     "category": "furniture",
     "description": "mdf cupboard it has 2 door and 3/6 feet in size available in 4 colors black ,wooden ,white marbel , tomato colours",
-    "image": "/static/uploads/a209fc6abcf2489da9a512302021a50f.png"
+    "image": "/static/uploads/a209fc6abcf2489da9a512302021a50f.png",
+    "out_of_stock": false,
+    "last_scanned_count": 1,
+    "last_scanned_at": "29 Jun 2026, 07:59 PM"
+  },
+  {
+    "name": "cupboard",
+    "price": 6500.0,
+    "category": "furniture",
+    "description": "4feet multy purpose coupboard for books cloths etc",
+    "image": "/static/uploads/35b3573b94ae42689019f5726426b248.jpg",
+    "out_of_stock": false
   }
 ]

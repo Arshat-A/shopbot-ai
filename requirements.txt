@@ -2,3 +2,8 @@ fastapi
 uvicorn
 groq
 python-multipart
+fastapi
+uvicorn
+groq
+python-multipart
+qrcode[pil]
