@@ -24,7 +24,7 @@
     "customer_phone": "1234567999",
     "id": "5A1DEB95",
     "timestamp": "10 Jul 2026, 10:01 AM",
-    "status": "pending"
+    "status": "delivered"
   },
   {
     "product": "Book Box",
@@ -33,6 +33,6 @@
     "customer_phone": "1234567999",
     "id": "0B832B06",
     "timestamp": "10 Jul 2026, 10:01 AM",
-    "status": "pending"
+    "status": "delivered"
   }
 ]

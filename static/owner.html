@@ -261,6 +261,43 @@
     /* Scanner tab special style */
     .dash-tab.scanner-tab { position: relative; }
     .dash-tab.scanner-tab.active { color: var(--scanner-green); border-bottom-color: var(--scanner-green); }
+    .dash-tab.analytics-tab.active { color: #6366F1; border-bottom-color: #6366F1; }
+
+    /* ANALYTICS */
+    .analytics-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 20px; }
+    .analytics-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px; }
+    .analytics-card { background: var(--white); border-radius: 16px; padding: 20px 22px; border: 1px solid rgba(201, 168, 76, 0.15); }
+    .analytics-card-title { font-size: 11px; font-weight: 600; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; }
+    .analytics-card-value { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: var(--brown); line-height: 1; margin-bottom: 4px; }
+    .analytics-card-sub { font-size: 12px; color: var(--text-light); }
+    .analytics-card.highlight { background: var(--brown); }
+    .analytics-card.highlight .analytics-card-title { color: rgba(255,255,255,0.5); }
+    .analytics-card.highlight .analytics-card-value { color: var(--gold); }
+    .analytics-card.highlight .analytics-card-sub { color: rgba(255,255,255,0.4); }
+    .bar-chart { display: flex; flex-direction: column; gap: 10px; }
+    .bar-row { display: flex; align-items: center; gap: 12px; }
+    .bar-label { font-size: 12px; color: var(--text-light); width: 130px; flex-shrink: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .bar-track { flex: 1; background: var(--gray); border-radius: 100px; height: 10px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 100px; background: linear-gradient(90deg, var(--brown), var(--gold)); transition: width 0.6s ease; }
+    .bar-count { font-size: 12px; font-weight: 600; color: var(--brown); width: 28px; text-align: right; flex-shrink: 0; }
+    .hour-chart { display: flex; align-items: flex-end; gap: 4px; height: 80px; padding-top: 8px; }
+    .hour-bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; height: 100%; justify-content: flex-end; }
+    .hour-bar { width: 100%; border-radius: 4px 4px 0 0; background: rgba(201,168,76,0.3); transition: height 0.5s ease; min-height: 2px; }
+    .hour-bar.peak { background: var(--gold); }
+    .activity-feed { display: flex; flex-direction: column; gap: 0; }
+    .activity-item { display: flex; gap: 14px; align-items: flex-start; padding: 14px 0; border-bottom: 1px solid rgba(201,168,76,0.08); }
+    .activity-item:last-child { border-bottom: none; }
+    .activity-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+    .activity-dot.pending { background: var(--gold); }
+    .activity-dot.delivered { background: var(--success); }
+    .activity-text { flex: 1; }
+    .activity-name { font-size: 13px; font-weight: 600; color: var(--brown); }
+    .activity-sub { font-size: 12px; color: var(--text-light); margin-top: 2px; }
+    .activity-time { font-size: 11px; color: var(--text-light); flex-shrink: 0; }
+    .donut-wrap { display: flex; align-items: center; gap: 24px; }
+    .donut-legend { display: flex; flex-direction: column; gap: 8px; }
+    .donut-legend-item { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+    .donut-legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
 
     .tab-badge {
       background: var(--gold);
@@ -1076,6 +1113,9 @@
         📋 Orders
         <span class="tab-badge" id="pending-badge" style="display:none">0</span>
       </button>
+      <button class="dash-tab analytics-tab" id="tab-btn-analytics" onclick="switchTab('analytics')">
+        📊 Analytics
+      </button>
       <button class="dash-tab scanner-tab" id="tab-btn-scanner" onclick="switchTab('scanner')">
         🤖 AI Scanner
         <span class="tab-badge-new">NEW</span>
@@ -1216,6 +1256,91 @@
             </div>
           </div>
         </div>
+      </div>
+
+      <!-- ─── ANALYTICS TAB ─── -->
+      <div class="tab-panel" id="panel-analytics">
+
+        <div class="analytics-grid-4">
+          <div class="analytics-card highlight">
+            <div class="analytics-card-title">Total Revenue</div>
+            <div class="analytics-card-value" id="an-revenue">₹0</div>
+            <div class="analytics-card-sub">from all orders</div>
+          </div>
+          <div class="analytics-card">
+            <div class="analytics-card-title">Delivered Orders</div>
+            <div class="analytics-card-value" id="an-delivered">0</div>
+            <div class="analytics-card-sub">completed</div>
+          </div>
+          <div class="analytics-card">
+            <div class="analytics-card-title">Avg Order Value</div>
+            <div class="analytics-card-value" id="an-avg">₹0</div>
+            <div class="analytics-card-sub">per order</div>
+          </div>
+          <div class="analytics-card">
+            <div class="analytics-card-title">Delivery Rate</div>
+            <div class="analytics-card-value" id="an-rate">0%</div>
+            <div class="analytics-card-sub">orders completed</div>
+          </div>
+        </div>
+
+        <div class="analytics-grid">
+          <div class="card" style="margin-bottom:0;">
+            <div class="card-header"><div class="card-title">🏆 Top Products</div></div>
+            <div class="card-body">
+              <div class="bar-chart" id="an-top-products">
+                <div style="color:var(--text-light);font-size:13px;">No orders yet</div>
+              </div>
+            </div>
+          </div>
+          <div class="card" style="margin-bottom:0;">
+            <div class="card-header"><div class="card-title">📊 Order Status</div></div>
+            <div class="card-body">
+              <div class="donut-wrap">
+                <svg width="100" height="100" viewBox="0 0 100 100">
+                  <circle cx="50" cy="50" r="38" fill="none" stroke="#F5F0EA" stroke-width="14"/>
+                  <circle id="donut-delivered" cx="50" cy="50" r="38" fill="none" stroke="#16a34a" stroke-width="14"
+                    stroke-dasharray="0 239" stroke-dashoffset="60" stroke-linecap="round"
+                    style="transition:stroke-dasharray 0.8s ease;transform-origin:center;transform:rotate(-90deg);"/>
+                  <circle id="donut-pending" cx="50" cy="50" r="38" fill="none" stroke="#C9A84C" stroke-width="14"
+                    stroke-dasharray="0 239" stroke-dashoffset="60" stroke-linecap="round"
+                    style="transition:stroke-dasharray 0.8s ease;transform-origin:center;transform:rotate(-90deg);"/>
+                </svg>
+                <div class="donut-legend">
+                  <div class="donut-legend-item"><div class="donut-legend-dot" style="background:#16a34a;"></div><span id="an-delivered-label">0 Delivered</span></div>
+                  <div class="donut-legend-item"><div class="donut-legend-dot" style="background:#C9A84C;"></div><span id="an-pending-label">0 Pending</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">🕐 Peak Order Hours</div>
+            <div style="font-size:12px;color:var(--text-light);">When customers order most</div>
+          </div>
+          <div class="card-body">
+            <div class="hour-chart" id="an-hours"></div>
+            <div style="display:flex;justify-content:space-between;margin-top:6px;">
+              <span style="font-size:10px;color:var(--text-light);">12 AM</span>
+              <span style="font-size:10px;color:var(--text-light);">6 AM</span>
+              <span style="font-size:10px;color:var(--text-light);">12 PM</span>
+              <span style="font-size:10px;color:var(--text-light);">6 PM</span>
+              <span style="font-size:10px;color:var(--text-light);">11 PM</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div class="card-title">⚡ Recent Activity</div></div>
+          <div class="card-body">
+            <div class="activity-feed" id="an-activity">
+              <div style="color:var(--text-light);font-size:13px;">No orders yet</div>
+            </div>
+          </div>
+        </div>
+
       </div>
 
       <!-- ─── AI SCANNER TAB ─── -->
@@ -1378,6 +1503,98 @@
       document.getElementById('tab-btn-' + tab).classList.add('active')
       if (tab === 'orders') loadOrders()
       if (tab === 'catalogue') loadProducts()
+      if (tab === 'analytics') loadAnalytics()
+    }
+
+    // ── ANALYTICS ─────────────────────────────────────────────
+    async function loadAnalytics() {
+      const res = await fetch('/orders')
+      const orders = await res.json()
+
+      if (orders.length === 0) {
+        document.getElementById('an-revenue').innerText = '₹0'
+        document.getElementById('an-delivered').innerText = '0'
+        document.getElementById('an-avg').innerText = '₹0'
+        document.getElementById('an-rate').innerText = '0%'
+        return
+      }
+
+      let totalRevenue = 0
+      orders.forEach(o => {
+        const raw = String(o.price).replace(/[₹,\s]/g, '')
+        const num = parseFloat(raw)
+        if (!isNaN(num)) totalRevenue += num
+      })
+
+      const delivered = orders.filter(o => o.status === 'delivered').length
+      const pending = orders.filter(o => o.status === 'pending').length
+      const avg = orders.length > 0 ? totalRevenue / orders.length : 0
+      const rate = orders.length > 0 ? Math.round((delivered / orders.length) * 100) : 0
+
+      document.getElementById('an-revenue').innerText = '₹' + totalRevenue.toLocaleString('en-IN')
+      document.getElementById('an-delivered').innerText = delivered
+      document.getElementById('an-avg').innerText = '₹' + Math.round(avg).toLocaleString('en-IN')
+      document.getElementById('an-rate').innerText = rate + '%'
+
+      // Top products bar chart
+      const productCounts = {}
+      orders.forEach(o => { const name = o.product || 'Unknown'; productCounts[name] = (productCounts[name] || 0) + 1 })
+      const sorted = Object.entries(productCounts).sort((a, b) => b[1] - a[1]).slice(0, 6)
+      const maxCount = sorted[0]?.[1] || 1
+      document.getElementById('an-top-products').innerHTML = sorted.length === 0
+        ? '<div style="color:var(--text-light);font-size:13px;">No orders yet</div>'
+        : sorted.map(([name, count]) => `
+            <div class="bar-row">
+              <div class="bar-label" title="${name}">${name}</div>
+              <div class="bar-track"><div class="bar-fill" style="width:${(count/maxCount)*100}%"></div></div>
+              <div class="bar-count">${count}</div>
+            </div>`).join('')
+
+      // Donut chart
+      const circ = 2 * Math.PI * 38
+      const deliveredArc = delivered > 0 ? (delivered / orders.length) * circ : 0
+      const pendingArc = pending > 0 ? (pending / orders.length) * circ : 0
+      document.getElementById('donut-delivered').setAttribute('stroke-dasharray', `${deliveredArc} ${circ}`)
+      document.getElementById('donut-pending').setAttribute('stroke-dasharray', `${pendingArc} ${circ}`)
+      document.getElementById('donut-pending').setAttribute('stroke-dashoffset', -(deliveredArc - 60))
+      document.getElementById('an-delivered-label').innerText = `${delivered} Delivered`
+      document.getElementById('an-pending-label').innerText = `${pending} Pending`
+
+      // Peak hours chart
+      const hourCounts = new Array(24).fill(0)
+      orders.forEach(o => {
+        if (o.timestamp) {
+          const match = o.timestamp.match(/(\d+):(\d+)\s*(AM|PM)/i)
+          if (match) {
+            let h = parseInt(match[1])
+            const ampm = match[3].toUpperCase()
+            if (ampm === 'PM' && h !== 12) h += 12
+            if (ampm === 'AM' && h === 12) h = 0
+            hourCounts[h]++
+          }
+        }
+      })
+      const maxH = Math.max(...hourCounts, 1)
+      document.getElementById('an-hours').innerHTML = hourCounts.map((count, h) => `
+        <div class="hour-bar-wrap">
+          <div class="hour-bar ${count === maxH && count > 0 ? 'peak' : ''}"
+            style="height:${Math.max((count/maxH)*68, count > 0 ? 6 : 2)}px;" title="${h}:00 — ${count} orders">
+          </div>
+        </div>`).join('')
+
+      // Recent activity
+      const recent = [...orders].reverse().slice(0, 8)
+      document.getElementById('an-activity').innerHTML = recent.length === 0
+        ? '<div style="color:var(--text-light);font-size:13px;">No orders yet</div>'
+        : recent.map(o => `
+            <div class="activity-item">
+              <div class="activity-dot ${o.status}"></div>
+              <div class="activity-text">
+                <div class="activity-name">${o.product}</div>
+                <div class="activity-sub">👤 ${o.customer_name} · 📞 ${o.customer_phone}</div>
+              </div>
+              <div class="activity-time">${o.timestamp || ''}</div>
+            </div>`).join('')
     }
 
     // ── STATS ─────────────────────────────────────────────────

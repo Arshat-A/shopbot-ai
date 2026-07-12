@@ -41,242 +41,131 @@
       justify-content: space-between;
     }
 
-    .nav-logo {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
+    .nav-logo { display: flex; align-items: center; gap: 12px; }
 
     .nav-logo-icon {
       width: 40px; height: 40px;
       background: var(--brown);
       border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: flex; align-items: center; justify-content: center;
       color: var(--gold);
       font-family: 'Playfair Display', serif;
-      font-weight: 700;
-      font-size: 18px;
+      font-weight: 700; font-size: 18px;
     }
 
-    .nav-logo-text {
-      font-family: 'Playfair Display', serif;
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--brown);
-    }
+    .nav-logo-text { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: var(--brown); }
+    .nav-logo-sub { font-size: 11px; color: var(--text-light); font-weight: 400; }
 
-    .nav-logo-sub {
-      font-size: 11px;
-      color: var(--text-light);
-      font-weight: 400;
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 32px;
-      list-style: none;
-    }
-
-    .nav-links a {
-      text-decoration: none;
-      color: var(--brown-light);
-      font-size: 14px;
-      font-weight: 500;
-      transition: color 0.2s;
-    }
-
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links a { text-decoration: none; color: var(--brown-light); font-size: 14px; font-weight: 500; transition: color 0.2s; }
     .nav-links a:hover { color: var(--gold); }
 
-    .nav-cta {
-      background: var(--brown);
-      color: var(--gold) !important;
-      padding: 10px 22px;
-      border-radius: 8px;
-      font-weight: 600 !important;
-      transition: background 0.2s !important;
-    }
-
+    .nav-cta { background: var(--brown); color: var(--gold) !important; padding: 10px 22px; border-radius: 8px; font-weight: 600 !important; transition: background 0.2s !important; }
     .nav-cta:hover { background: var(--brown-light) !important; color: var(--white) !important; }
 
     /* HERO */
     .hero {
       min-height: 100vh;
-      display: flex;
-      align-items: center;
+      display: flex; align-items: center;
       padding: 120px 40px 80px;
-      position: relative;
-      overflow: hidden;
+      position: relative; overflow: hidden;
     }
 
-    .hero-bg {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, #FDF6ED 0%, #F5EDD8 50%, #EDD9B8 100%);
-    }
+    .hero-bg { position: absolute; inset: 0; background: linear-gradient(135deg, #FDF6ED 0%, #F5EDD8 50%, #EDD9B8 100%); }
 
-    .hero-circle {
-      position: absolute;
-      border-radius: 50%;
-      opacity: 0.08;
-      background: var(--brown);
-    }
-
+    .hero-circle { position: absolute; border-radius: 50%; opacity: 0.08; background: var(--brown); }
     .hero-circle-1 { width: 600px; height: 600px; top: -200px; right: -100px; }
     .hero-circle-2 { width: 300px; height: 300px; bottom: -100px; left: 100px; }
 
-    .hero-content {
-      position: relative;
-      z-index: 1;
-      max-width: 580px;
-    }
+    .hero-content { position: relative; z-index: 1; max-width: 580px; }
 
     .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
+      display: inline-flex; align-items: center; gap: 8px;
       background: rgba(201, 168, 76, 0.15);
       border: 1px solid rgba(201, 168, 76, 0.3);
-      color: var(--gold);
-      font-size: 12px;
-      font-weight: 600;
-      padding: 6px 16px;
-      border-radius: 100px;
-      margin-bottom: 24px;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
+      color: var(--gold); font-size: 12px; font-weight: 600;
+      padding: 6px 16px; border-radius: 100px; margin-bottom: 24px;
+      letter-spacing: 0.05em; text-transform: uppercase;
       animation: fadeDown 0.6s ease both;
     }
 
     .hero-title {
       font-family: 'Playfair Display', serif;
       font-size: clamp(42px, 6vw, 72px);
-      font-weight: 700;
-      line-height: 1.1;
-      color: var(--brown);
-      margin-bottom: 20px;
-      animation: fadeUp 0.7s ease 0.1s both;
+      font-weight: 700; line-height: 1.1; color: var(--brown);
+      margin-bottom: 20px; animation: fadeUp 0.7s ease 0.1s both;
     }
 
-    .hero-title span {
-      color: var(--gold);
-      font-style: italic;
-    }
+    .hero-title span { color: var(--gold); font-style: italic; }
 
     .hero-subtitle {
-      font-size: 17px;
-      color: var(--text-light);
-      line-height: 1.7;
-      margin-bottom: 40px;
-      font-weight: 400;
+      font-size: 17px; color: var(--text-light); line-height: 1.7;
+      margin-bottom: 40px; font-weight: 400;
       animation: fadeUp 0.7s ease 0.2s both;
     }
 
-    .hero-actions {
-      display: flex;
-      gap: 16px;
-      flex-wrap: wrap;
-      animation: fadeUp 0.7s ease 0.3s both;
-    }
+    .hero-actions { display: flex; gap: 16px; flex-wrap: wrap; animation: fadeUp 0.7s ease 0.3s both; }
 
     .btn-primary {
-      background: var(--brown);
-      color: var(--gold);
-      padding: 14px 32px;
-      border-radius: 10px;
-      font-size: 15px;
-      font-weight: 600;
-      border: none;
-      cursor: pointer;
-      transition: all 0.2s;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
+      background: var(--brown); color: var(--gold);
+      padding: 14px 32px; border-radius: 10px; font-size: 15px; font-weight: 600;
+      border: none; cursor: pointer; transition: all 0.2s;
+      text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
     }
-
-    .btn-primary:hover {
-      background: var(--brown-light);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(61, 43, 31, 0.25);
-    }
+    .btn-primary:hover { background: var(--brown-light); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(61, 43, 31, 0.25); }
 
     .btn-secondary {
-      background: transparent;
-      color: var(--brown);
-      padding: 14px 32px;
-      border-radius: 10px;
-      font-size: 15px;
-      font-weight: 600;
-      border: 2px solid var(--brown);
-      cursor: pointer;
-      transition: all 0.2s;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
+      background: transparent; color: var(--brown);
+      padding: 14px 32px; border-radius: 10px; font-size: 15px; font-weight: 600;
+      border: 2px solid var(--brown); cursor: pointer; transition: all 0.2s;
+      text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
     }
+    .btn-secondary:hover { background: var(--brown); color: var(--gold); transform: translateY(-2px); }
 
-    .btn-secondary:hover {
-      background: var(--brown);
-      color: var(--gold);
-      transform: translateY(-2px);
-    }
-
-    .hero-stats {
-      display: flex;
-      gap: 40px;
-      margin-top: 60px;
-      animation: fadeUp 0.7s ease 0.4s both;
-    }
-
+    .hero-stats { display: flex; gap: 40px; margin-top: 60px; animation: fadeUp 0.7s ease 0.4s both; }
     .stat-item { text-align: left; }
+    .stat-num { font-family: 'Playfair Display', serif; font-size: 32px; font-weight: 700; color: var(--brown); }
+    .stat-label { font-size: 12px; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 500; }
 
-    .stat-num {
+    /* PRODUCTS */
+    .section { padding: 100px 40px; }
+    .section-eyebrow { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gold); margin-bottom: 12px; }
+    .section-title { font-family: 'Playfair Display', serif; font-size: clamp(28px, 4vw, 42px); font-weight: 700; color: var(--brown); margin-bottom: 16px; }
+    .section-sub { font-size: 15px; color: var(--text-light); max-width: 500px; line-height: 1.7; margin-bottom: 56px; }
+
+    /* Visual search banner */
+    .visual-search-banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--brown);
+      border-radius: 16px;
+      padding: 20px 28px;
+      margin-bottom: 32px;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .visual-search-banner-left { display: flex; align-items: center; gap: 16px; }
+    .visual-search-banner-icon { font-size: 36px; }
+
+    .visual-search-banner-title {
       font-family: 'Playfair Display', serif;
-      font-size: 32px;
-      font-weight: 700;
-      color: var(--brown);
+      font-size: 16px; font-weight: 700; color: var(--white);
+      margin-bottom: 3px;
     }
 
-    .stat-label {
-      font-size: 12px;
-      color: var(--text-light);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      font-weight: 500;
-    }
+    .visual-search-banner-sub { font-size: 12px; color: rgba(255,255,255,0.55); }
 
-    /* FEATURED PRODUCTS */
-    .section {
-      padding: 100px 40px;
+    .visual-search-banner-btn {
+      background: var(--gold); color: var(--brown);
+      border: none; border-radius: 10px;
+      padding: 11px 22px; font-size: 13px; font-weight: 700;
+      font-family: 'Inter', sans-serif; cursor: pointer;
+      transition: all 0.2s; white-space: nowrap;
+      display: flex; align-items: center; gap: 8px;
     }
-
-    .section-eyebrow {
-      font-size: 12px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--gold);
-      margin-bottom: 12px;
-    }
-
-    .section-title {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(28px, 4vw, 42px);
-      font-weight: 700;
-      color: var(--brown);
-      margin-bottom: 16px;
-    }
-
-    .section-sub {
-      font-size: 15px;
-      color: var(--text-light);
-      max-width: 500px;
-      line-height: 1.7;
-      margin-bottom: 56px;
-    }
+    .visual-search-banner-btn:hover { background: var(--gold-light); transform: translateY(-1px); }
 
     .products-grid {
       display: grid;
@@ -285,278 +174,78 @@
     }
 
     .product-card {
-      background: var(--white);
-      border-radius: 16px;
-      overflow: hidden;
-      border: 1px solid rgba(201, 168, 76, 0.15);
-      transition: all 0.3s ease;
-      cursor: pointer;
-      animation: fadeUp 0.5s ease both;
+      background: var(--white); border-radius: 16px; overflow: hidden;
+      border: 1px solid rgba(201, 168, 76, 0.15); transition: all 0.3s ease;
+      cursor: pointer; animation: fadeUp 0.5s ease both;
     }
+    .product-card:hover { transform: translateY(-6px); box-shadow: 0 20px 48px rgba(61, 43, 31, 0.12); border-color: rgba(201, 168, 76, 0.4); }
 
-    .product-card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 20px 48px rgba(61, 43, 31, 0.12);
-      border-color: rgba(201, 168, 76, 0.4);
-    }
-
-    .product-img {
-      width: 100%;
-      height: 200px;
-      object-fit: cover;
-      background: var(--gray);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 48px;
-    }
-
-    .product-img img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .product-info {
-      padding: 20px;
-    }
-
-    .product-name {
-      font-family: 'Playfair Display', serif;
-      font-size: 17px;
-      font-weight: 600;
-      color: var(--brown);
-      margin-bottom: 4px;
-    }
-
-    .product-desc {
-      font-size: 13px;
-      color: var(--text-light);
-      margin-bottom: 12px;
-      line-height: 1.5;
-    }
-
-    .product-price {
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--gold);
-    }
-
-    .product-price span {
-      font-size: 12px;
-      color: var(--text-light);
-      font-weight: 400;
-    }
-
-    .out-of-stock-badge {
-      font-size: 11px;
-      background: #FEE2E2;
-      color: #DC2626;
-      padding: 3px 10px;
-      border-radius: 100px;
-      font-weight: 600;
-      display: inline-block;
-      margin-top: 6px;
-    }
+    .product-img { width: 100%; height: 200px; object-fit: cover; background: var(--gray); display: flex; align-items: center; justify-content: center; font-size: 48px; }
+    .product-img img { width: 100%; height: 100%; object-fit: cover; }
+    .product-info { padding: 20px; }
+    .product-name { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 600; color: var(--brown); margin-bottom: 4px; }
+    .product-desc { font-size: 13px; color: var(--text-light); margin-bottom: 12px; line-height: 1.5; }
+    .product-price { font-size: 18px; font-weight: 700; color: var(--gold); }
+    .product-price span { font-size: 12px; color: var(--text-light); font-weight: 400; }
+    .out-of-stock-badge { font-size: 11px; background: #FEE2E2; color: #DC2626; padding: 3px 10px; border-radius: 100px; font-weight: 600; display: inline-block; margin-top: 6px; }
 
     /* WHY US */
-    .why-section {
-      background: var(--brown);
-      padding: 100px 40px;
-    }
-
+    .why-section { background: var(--brown); padding: 100px 40px; }
     .why-section .section-eyebrow { color: var(--gold); }
     .why-section .section-title { color: var(--white); }
     .why-section .section-sub { color: rgba(255,255,255,0.6); }
 
-    .why-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 32px;
-    }
+    .why-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 32px; }
 
-    .why-card {
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(201, 168, 76, 0.2);
-      border-radius: 16px;
-      padding: 32px 24px;
-      transition: all 0.3s;
-    }
-
-    .why-card:hover {
-      background: rgba(201, 168, 76, 0.1);
-      border-color: rgba(201, 168, 76, 0.4);
-      transform: translateY(-4px);
-    }
-
-    .why-icon {
-      font-size: 36px;
-      margin-bottom: 16px;
-    }
-
-    .why-title {
-      font-family: 'Playfair Display', serif;
-      font-size: 18px;
-      color: var(--white);
-      margin-bottom: 8px;
-      font-weight: 600;
-    }
-
-    .why-desc {
-      font-size: 13px;
-      color: rgba(255,255,255,0.55);
-      line-height: 1.6;
-    }
+    .why-card { background: rgba(255,255,255,0.06); border: 1px solid rgba(201, 168, 76, 0.2); border-radius: 16px; padding: 32px 24px; transition: all 0.3s; }
+    .why-card:hover { background: rgba(201, 168, 76, 0.1); border-color: rgba(201, 168, 76, 0.4); transform: translateY(-4px); }
+    .why-icon { font-size: 36px; margin-bottom: 16px; }
+    .why-title { font-family: 'Playfair Display', serif; font-size: 18px; color: var(--white); margin-bottom: 8px; font-weight: 600; }
+    .why-desc { font-size: 13px; color: rgba(255,255,255,0.55); line-height: 1.6; }
 
     /* ABOUT */
-    .about-section {
-      padding: 100px 40px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 80px;
-      align-items: center;
-    }
+    .about-section { padding: 100px 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
 
     .about-img-block {
       background: linear-gradient(135deg, var(--brown) 0%, var(--brown-light) 100%);
-      border-radius: 24px;
-      height: 400px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      gap: 16px;
-      color: var(--gold);
-      font-family: 'Playfair Display', serif;
-      font-size: 24px;
-      font-weight: 700;
-      position: relative;
-      overflow: hidden;
+      border-radius: 24px; height: 400px;
+      display: flex; align-items: center; justify-content: center; flex-direction: column;
+      gap: 16px; color: var(--gold);
+      font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700;
+      position: relative; overflow: hidden;
     }
 
-    .about-img-block::before {
-      content: '';
-      position: absolute;
-      width: 300px; height: 300px;
-      background: rgba(201, 168, 76, 0.08);
-      border-radius: 50%;
-      top: -100px; right: -100px;
-    }
-
-    .about-img-block .big-r {
-      font-size: 120px;
-      opacity: 0.15;
-      position: absolute;
-      bottom: -20px;
-      right: 20px;
-      line-height: 1;
-    }
-
+    .about-img-block::before { content: ''; position: absolute; width: 300px; height: 300px; background: rgba(201, 168, 76, 0.08); border-radius: 50%; top: -100px; right: -100px; }
+    .about-img-block .big-r { font-size: 120px; opacity: 0.15; position: absolute; bottom: -20px; right: 20px; line-height: 1; }
     .about-content .section-sub { margin-bottom: 32px; }
 
-    .about-detail {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      margin-bottom: 16px;
-    }
-
-    .about-detail-icon {
-      width: 36px; height: 36px;
-      background: rgba(201, 168, 76, 0.1);
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      flex-shrink: 0;
-    }
-
-    .about-detail-text {
-      font-size: 14px;
-      color: var(--text-light);
-      line-height: 1.6;
-    }
-
-    .about-detail-text strong {
-      color: var(--brown);
-      display: block;
-      font-weight: 600;
-      margin-bottom: 2px;
-    }
+    .about-detail { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 16px; }
+    .about-detail-icon { width: 36px; height: 36px; background: rgba(201, 168, 76, 0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+    .about-detail-text { font-size: 14px; color: var(--text-light); line-height: 1.6; }
+    .about-detail-text strong { color: var(--brown); display: block; font-weight: 600; margin-bottom: 2px; }
 
     /* CONTACT */
-    .contact-section {
-      background: var(--gray);
-      padding: 100px 40px;
-      text-align: center;
-    }
-
-    .contact-cards {
-      display: flex;
-      gap: 24px;
-      justify-content: center;
-      flex-wrap: wrap;
-      margin-top: 48px;
-    }
-
-    .contact-card {
-      background: var(--white);
-      border-radius: 16px;
-      padding: 32px 40px;
-      border: 1px solid rgba(201, 168, 76, 0.15);
-      transition: all 0.3s;
-      min-width: 200px;
-    }
-
-    .contact-card:hover {
-      transform: translateY(-4px);
-      border-color: var(--gold);
-      box-shadow: 0 12px 32px rgba(61, 43, 31, 0.08);
-    }
-
+    .contact-section { background: var(--gray); padding: 100px 40px; text-align: center; }
+    .contact-cards { display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; margin-top: 48px; }
+    .contact-card { background: var(--white); border-radius: 16px; padding: 32px 40px; border: 1px solid rgba(201, 168, 76, 0.15); transition: all 0.3s; min-width: 200px; }
+    .contact-card:hover { transform: translateY(-4px); border-color: var(--gold); box-shadow: 0 12px 32px rgba(61, 43, 31, 0.08); }
     .contact-icon { font-size: 32px; margin-bottom: 12px; }
     .contact-label { font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-light); font-weight: 600; margin-bottom: 6px; }
     .contact-value { font-size: 15px; color: var(--brown); font-weight: 600; }
 
-    /* FOOTER */
-    footer {
-      background: var(--brown);
-      color: rgba(255,255,255,0.5);
-      text-align: center;
-      padding: 24px 40px;
-      font-size: 13px;
-    }
-
+    footer { background: var(--brown); color: rgba(255,255,255,0.5); text-align: center; padding: 24px 40px; font-size: 13px; }
     footer span { color: var(--gold); }
 
-    /* CHAT BUTTON */
-    .chat-fab {
-      position: fixed;
-      bottom: 32px;
-      right: 32px;
-      z-index: 200;
-    }
+    /* CHAT FAB */
+    .chat-fab { position: fixed; bottom: 32px; right: 32px; z-index: 200; }
 
     .chat-fab-btn {
-      width: 64px; height: 64px;
-      background: var(--brown);
-      border-radius: 50%;
-      border: none;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 28px;
-      box-shadow: 0 8px 32px rgba(61, 43, 31, 0.35);
-      transition: all 0.3s;
-      animation: pulse 2s infinite;
+      width: 64px; height: 64px; background: var(--brown); border-radius: 50%; border: none;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      font-size: 28px; box-shadow: 0 8px 32px rgba(61, 43, 31, 0.35);
+      transition: all 0.3s; animation: pulse 2s infinite;
     }
-
-    .chat-fab-btn:hover {
-      background: var(--brown-light);
-      transform: scale(1.1);
-    }
+    .chat-fab-btn:hover { background: var(--brown-light); transform: scale(1.1); }
 
     @keyframes pulse {
       0%, 100% { box-shadow: 0 8px 32px rgba(61, 43, 31, 0.35); }
@@ -564,339 +253,181 @@
     }
 
     .chat-tooltip {
-      position: absolute;
-      bottom: 72px; right: 0;
-      background: var(--brown);
-      color: var(--white);
-      font-size: 13px;
-      font-weight: 500;
-      padding: 8px 16px;
-      border-radius: 10px;
-      white-space: nowrap;
+      position: absolute; bottom: 72px; right: 0;
+      background: var(--brown); color: var(--white);
+      font-size: 13px; font-weight: 500;
+      padding: 8px 16px; border-radius: 10px; white-space: nowrap;
       animation: fadeDown 0.5s ease 1s both;
     }
-
-    .chat-tooltip::after {
-      content: '';
-      position: absolute;
-      bottom: -6px; right: 24px;
-      width: 12px; height: 12px;
-      background: var(--brown);
-      transform: rotate(45deg);
-      border-radius: 2px;
-    }
+    .chat-tooltip::after { content: ''; position: absolute; bottom: -6px; right: 24px; width: 12px; height: 12px; background: var(--brown); transform: rotate(45deg); border-radius: 2px; }
 
     /* CHAT DRAWER */
     .chat-drawer {
-      position: fixed;
-      bottom: 110px; right: 32px;
-      width: 380px;
-      height: 560px;
-      background: var(--white);
-      border-radius: 24px;
+      position: fixed; bottom: 110px; right: 32px;
+      width: 380px; height: 580px;
+      background: var(--white); border-radius: 24px;
       box-shadow: 0 24px 80px rgba(61, 43, 31, 0.25);
-      z-index: 199;
-      display: none;
-      flex-direction: column;
-      overflow: hidden;
-      border: 1px solid rgba(201, 168, 76, 0.2);
+      z-index: 199; display: none; flex-direction: column;
+      overflow: hidden; border: 1px solid rgba(201, 168, 76, 0.2);
       animation: slideUp 0.3s ease;
     }
-
     .chat-drawer.open { display: flex; }
 
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(20px) scale(0.95); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
-    }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(20px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
 
     .drawer-header {
-      background: var(--brown);
-      padding: 16px 20px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-shrink: 0;
+      background: var(--brown); padding: 16px 20px;
+      display: flex; align-items: center; gap: 12px; flex-shrink: 0;
     }
 
-    .drawer-avatar {
-      width: 40px; height: 40px;
-      background: var(--gold);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Playfair Display', serif;
-      font-weight: 700;
-      color: var(--brown);
-      font-size: 16px;
-    }
-
-    .drawer-title {
-      color: var(--white);
-      font-weight: 600;
-      font-size: 14px;
-    }
-
-    .drawer-subtitle {
-      color: rgba(255,255,255,0.6);
-      font-size: 12px;
-      margin-top: 2px;
-    }
-
-    .drawer-close {
-      margin-left: auto;
-      background: none;
-      border: none;
-      color: rgba(255,255,255,0.6);
-      font-size: 22px;
-      cursor: pointer;
-      line-height: 1;
-      transition: color 0.2s;
-    }
-
+    .drawer-avatar { width: 40px; height: 40px; background: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Playfair Display', serif; font-weight: 700; color: var(--brown); font-size: 16px; }
+    .drawer-title { color: var(--white); font-weight: 600; font-size: 14px; }
+    .drawer-subtitle { color: rgba(255,255,255,0.6); font-size: 12px; margin-top: 2px; }
+    .drawer-close { margin-left: auto; background: none; border: none; color: rgba(255,255,255,0.6); font-size: 22px; cursor: pointer; line-height: 1; transition: color 0.2s; }
     .drawer-close:hover { color: var(--white); }
 
-    .drawer-messages {
-      flex: 1;
-      overflow-y: auto;
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      background: var(--cream);
-    }
-
+    .drawer-messages { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; background: var(--cream); }
     .drawer-messages::-webkit-scrollbar { width: 3px; }
     .drawer-messages::-webkit-scrollbar-thumb { background: var(--gold-light); border-radius: 4px; }
 
+    /* Input row with camera button */
     .drawer-input-row {
-      display: flex;
-      gap: 10px;
-      padding: 12px 16px;
+      display: flex; gap: 8px; padding: 12px 16px;
       background: var(--white);
       border-top: 1px solid rgba(201, 168, 76, 0.1);
-      flex-shrink: 0;
+      flex-shrink: 0; align-items: center;
     }
 
     .drawer-input {
-      flex: 1;
-      border: 1.5px solid rgba(201, 168, 76, 0.3);
-      border-radius: 100px;
-      padding: 10px 18px;
-      font-size: 13px;
-      font-family: 'Inter', sans-serif;
-      background: var(--cream);
-      color: var(--text);
-      outline: none;
-      transition: border-color 0.2s;
+      flex: 1; border: 1.5px solid rgba(201, 168, 76, 0.3); border-radius: 100px;
+      padding: 10px 18px; font-size: 13px; font-family: 'Inter', sans-serif;
+      background: var(--cream); color: var(--text); outline: none; transition: border-color 0.2s;
     }
-
     .drawer-input:focus { border-color: var(--gold); }
     .drawer-input:disabled { opacity: 0.5; }
 
-    .drawer-send {
-      width: 40px; height: 40px;
-      background: var(--brown);
-      border: none;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--gold);
-      font-size: 16px;
-      transition: all 0.2s;
-      flex-shrink: 0;
+    /* Camera button */
+    .drawer-camera {
+      width: 38px; height: 38px;
+      background: rgba(201, 168, 76, 0.12);
+      border: 1.5px solid rgba(201, 168, 76, 0.3);
+      border-radius: 50%; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; transition: all 0.2s; flex-shrink: 0;
     }
+    .drawer-camera:hover { background: rgba(201, 168, 76, 0.25); border-color: var(--gold); }
+    .drawer-camera:disabled { opacity: 0.4; cursor: default; }
 
+    .drawer-send { width: 40px; height: 40px; background: var(--brown); border: none; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--gold); font-size: 16px; transition: all 0.2s; flex-shrink: 0; }
     .drawer-send:hover { background: var(--brown-light); transform: scale(1.05); }
     .drawer-send:disabled { opacity: 0.4; cursor: default; }
 
-    /* CHAT BUBBLES */
-    .bubble-bot, .bubble-user {
+    /* Visual search in chat */
+    .visual-search-msg {
+      background: var(--white);
+      border: 1.5px solid rgba(201,168,76,0.25);
+      border-radius: 16px;
+      padding: 16px;
+      align-self: flex-start;
+      max-width: 90%;
       animation: fadeUp 0.3s ease;
-      max-width: 85%;
     }
 
+    .visual-search-msg-title {
+      font-size: 13px; font-weight: 600; color: var(--brown); margin-bottom: 10px;
+      display: flex; align-items: center; gap: 6px;
+    }
+
+    .vs-upload-zone {
+      border: 2px dashed rgba(201,168,76,0.3);
+      border-radius: 12px; padding: 20px;
+      text-align: center; cursor: pointer;
+      transition: all 0.2s; background: var(--cream);
+      margin-bottom: 10px;
+    }
+    .vs-upload-zone:hover { border-color: var(--gold); background: rgba(201,168,76,0.04); }
+    .vs-upload-text { font-size: 12px; color: var(--text-light); margin-top: 4px; }
+
+    .vs-preview {
+      display: none; width: 100%; max-height: 140px;
+      object-fit: contain; border-radius: 10px;
+      border: 1px solid rgba(201,168,76,0.15); margin-bottom: 10px;
+    }
+
+    .vs-search-btn {
+      width: 100%; background: var(--brown); color: var(--gold);
+      border: none; border-radius: 10px; padding: 10px;
+      font-size: 13px; font-weight: 600; font-family: 'Inter', sans-serif;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .vs-search-btn:hover { background: var(--brown-light); }
+    .vs-search-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* Visual search result card */
+    .vs-result {
+      background: var(--white);
+      border: 1.5px solid rgba(201,168,76,0.3);
+      border-radius: 14px; padding: 14px;
+      align-self: flex-start; max-width: 90%;
+      animation: fadeUp 0.3s ease;
+    }
+
+    .vs-result-title { font-size: 12px; font-weight: 600; color: var(--text-light); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.05em; }
+
+    .vs-match {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px; background: var(--cream); border-radius: 10px; margin-bottom: 8px;
+      cursor: pointer; transition: all 0.2s; border: 1px solid transparent;
+    }
+    .vs-match:hover { border-color: var(--gold); background: rgba(201,168,76,0.06); }
+    .vs-match:last-child { margin-bottom: 0; }
+
+    .vs-match-img { width: 52px; height: 52px; border-radius: 8px; object-fit: cover; background: var(--gray); display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+    .vs-match-img img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; }
+    .vs-match-name { font-size: 13px; font-weight: 600; color: var(--brown); margin-bottom: 2px; }
+    .vs-match-price { font-size: 13px; font-weight: 700; color: var(--gold); }
+    .vs-match-desc { font-size: 11px; color: var(--text-light); }
+
+    /* BUBBLES */
+    .bubble-bot, .bubble-user { animation: fadeUp 0.3s ease; max-width: 85%; }
     .bubble-bot { align-self: flex-start; }
     .bubble-user { align-self: flex-end; }
 
-    .bubble-bot-inner {
-      background: var(--white);
-      border: 1px solid rgba(201, 168, 76, 0.15);
-      color: var(--text);
-      padding: 12px 16px;
-      border-radius: 18px 18px 18px 4px;
-      font-size: 13px;
-      line-height: 1.6;
-      box-shadow: 0 2px 8px rgba(61,43,31,0.06);
-      white-space: pre-line;
-    }
+    .bubble-bot-inner { background: var(--white); border: 1px solid rgba(201, 168, 76, 0.15); color: var(--text); padding: 12px 16px; border-radius: 18px 18px 18px 4px; font-size: 13px; line-height: 1.6; box-shadow: 0 2px 8px rgba(61,43,31,0.06); white-space: pre-line; }
+    .bubble-user-inner { background: var(--brown); color: var(--white); padding: 12px 16px; border-radius: 18px 18px 4px 18px; font-size: 13px; line-height: 1.6; }
 
-    .bubble-user-inner {
-      background: var(--brown);
-      color: var(--white);
-      padding: 12px 16px;
-      border-radius: 18px 18px 4px 18px;
-      font-size: 13px;
-      line-height: 1.6;
-    }
+    .bubble-img { margin-top: 10px; border-radius: 12px; width: 100%; max-height: 180px; object-fit: cover; border: 1px solid rgba(201, 168, 76, 0.15); }
 
-    .bubble-img {
-      margin-top: 10px;
-      border-radius: 12px;
-      width: 100%;
-      max-height: 180px;
-      object-fit: cover;
-      border: 1px solid rgba(201, 168, 76, 0.15);
-    }
+    .order-confirm { background: rgba(201, 168, 76, 0.1); border: 1px solid rgba(201, 168, 76, 0.3); border-radius: 12px; padding: 12px 16px; font-size: 12px; color: var(--brown); font-weight: 500; }
 
-    .order-confirm {
-      background: rgba(201, 168, 76, 0.1);
-      border: 1px solid rgba(201, 168, 76, 0.3);
-      border-radius: 12px;
-      padding: 12px 16px;
-      font-size: 12px;
-      color: var(--brown);
-      font-weight: 500;
-    }
-
-    .quick-btns {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 4px;
-    }
-
-    .quick-btn {
-      background: var(--white);
-      border: 1.5px solid rgba(201, 168, 76, 0.3);
-      color: var(--brown);
-      font-size: 12px;
-      padding: 6px 14px;
-      border-radius: 100px;
-      cursor: pointer;
-      font-family: 'Inter', sans-serif;
-      transition: all 0.2s;
-      font-weight: 500;
-    }
-
+    .quick-btns { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+    .quick-btn { background: var(--white); border: 1.5px solid rgba(201, 168, 76, 0.3); color: var(--brown); font-size: 12px; padding: 6px 14px; border-radius: 100px; cursor: pointer; font-family: 'Inter', sans-serif; transition: all 0.2s; font-weight: 500; }
     .quick-btn:hover { background: var(--brown); color: var(--gold); border-color: var(--brown); }
 
-    .typing-dots {
-      display: flex;
-      gap: 4px;
-      padding: 14px 16px;
-      background: var(--white);
-      border-radius: 18px 18px 18px 4px;
-      border: 1px solid rgba(201, 168, 76, 0.15);
-      width: fit-content;
-    }
-
-    .typing-dot {
-      width: 7px; height: 7px;
-      background: var(--gold-light);
-      border-radius: 50%;
-      animation: bounce 1s infinite;
-    }
-
+    .typing-dots { display: flex; gap: 4px; padding: 14px 16px; background: var(--white); border-radius: 18px 18px 18px 4px; border: 1px solid rgba(201, 168, 76, 0.15); width: fit-content; }
+    .typing-dot { width: 7px; height: 7px; background: var(--gold-light); border-radius: 50%; animation: bounce 1s infinite; }
     .typing-dot:nth-child(2) { animation-delay: 0.2s; }
     .typing-dot:nth-child(3) { animation-delay: 0.4s; }
 
-    @keyframes bounce {
-      0%, 100% { transform: translateY(0); background: var(--gold-light); }
-      50% { transform: translateY(-5px); background: var(--gold); }
-    }
+    @keyframes bounce { 0%, 100% { transform: translateY(0); background: var(--gold-light); } 50% { transform: translateY(-5px); background: var(--gold); } }
 
     /* CUSTOMER INFO */
-    .info-overlay {
-      position: absolute;
-      inset: 0;
-      background: rgba(61, 43, 31, 0.6);
-      backdrop-filter: blur(4px);
-      z-index: 10;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 24px;
-    }
-
-    .info-card {
-      background: var(--white);
-      border-radius: 16px;
-      padding: 28px 24px;
-      width: 88%;
-    }
-
-    .info-card-title {
-      font-family: 'Playfair Display', serif;
-      font-size: 17px;
-      color: var(--brown);
-      margin-bottom: 4px;
-      font-weight: 700;
-    }
-
-    .info-card-sub {
-      font-size: 12px;
-      color: var(--text-light);
-      margin-bottom: 16px;
-    }
-
-    .info-input {
-      width: 100%;
-      border: 1.5px solid rgba(201, 168, 76, 0.3);
-      border-radius: 10px;
-      padding: 10px 14px;
-      font-size: 13px;
-      font-family: 'Inter', sans-serif;
-      color: var(--text);
-      background: var(--cream);
-      margin-bottom: 10px;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-
+    .info-overlay { position: absolute; inset: 0; background: rgba(61, 43, 31, 0.6); backdrop-filter: blur(4px); z-index: 10; display: flex; align-items: center; justify-content: center; border-radius: 24px; }
+    .info-card { background: var(--white); border-radius: 16px; padding: 28px 24px; width: 88%; }
+    .info-card-title { font-family: 'Playfair Display', serif; font-size: 17px; color: var(--brown); margin-bottom: 4px; font-weight: 700; }
+    .info-card-sub { font-size: 12px; color: var(--text-light); margin-bottom: 16px; }
+    .info-input { width: 100%; border: 1.5px solid rgba(201, 168, 76, 0.3); border-radius: 10px; padding: 10px 14px; font-size: 13px; font-family: 'Inter', sans-serif; color: var(--text); background: var(--cream); margin-bottom: 10px; outline: none; transition: border-color 0.2s; }
     .info-input:focus { border-color: var(--gold); }
-
-    .info-submit {
-      width: 100%;
-      background: var(--brown);
-      color: var(--gold);
-      border: none;
-      border-radius: 10px;
-      padding: 12px;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      font-family: 'Inter', sans-serif;
-      transition: background 0.2s;
-    }
-
+    .info-submit { width: 100%; background: var(--brown); color: var(--gold); border: none; border-radius: 10px; padding: 12px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; transition: background 0.2s; }
     .info-submit:hover { background: var(--brown-light); }
     .info-error { color: #DC2626; font-size: 11px; text-align: center; margin-top: 8px; display: none; }
 
     /* ANIMATIONS */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(16px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
 
-    @keyframes fadeDown {
-      from { opacity: 0; transform: translateY(-8px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .reveal {
-      opacity: 0;
-      transform: translateY(24px);
-      transition: opacity 0.6s ease, transform 0.6s ease;
-    }
-
-    .reveal.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
 
     @media (max-width: 768px) {
       nav { padding: 14px 20px; }
@@ -908,6 +439,7 @@
       .contact-section { padding: 60px 20px; }
       .chat-drawer { width: calc(100vw - 32px); right: 16px; bottom: 90px; }
       .chat-fab { bottom: 20px; right: 16px; }
+      .visual-search-banner { flex-direction: column; align-items: flex-start; }
     }
   </style>
 </head>
@@ -937,30 +469,16 @@
     <div class="hero-circle hero-circle-2"></div>
     <div class="hero-content">
       <div class="hero-badge">✦ Sarjapur Road's Trusted Furniture Store</div>
-      <h1 class="hero-title">
-        Furniture that<br/>
-        <span>feels like home.</span>
-      </h1>
-      <p class="hero-subtitle">
-        Ready-made furniture crafted for Indian homes. Wardrobes, cots, tables, mandirs — premium quality at honest prices, right here in Dommasandra.
-      </p>
+      <h1 class="hero-title">Furniture that<br/><span>feels like home.</span></h1>
+      <p class="hero-subtitle">Ready-made furniture crafted for Indian homes. Wardrobes, cots, tables, mandirs — premium quality at honest prices, right here in Dommasandra.</p>
       <div class="hero-actions">
         <button class="btn-primary" onclick="openChat()">🛒 Shop Now</button>
         <a href="#products" class="btn-secondary">View Collection →</a>
       </div>
       <div class="hero-stats">
-        <div class="stat-item">
-          <div class="stat-num">500+</div>
-          <div class="stat-label">Happy Families</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-num">100+</div>
-          <div class="stat-label">Product Lines</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-num">₹0</div>
-          <div class="stat-label">Delivery Charges</div>
-        </div>
+        <div class="stat-item"><div class="stat-num">500+</div><div class="stat-label">Happy Families</div></div>
+        <div class="stat-item"><div class="stat-num">100+</div><div class="stat-label">Product Lines</div></div>
+        <div class="stat-item"><div class="stat-num">₹0</div><div class="stat-label">Delivery Charges</div></div>
       </div>
     </div>
   </section>
@@ -970,9 +488,22 @@
     <div class="section-eyebrow">Our Collection</div>
     <h2 class="section-title">Crafted for every room</h2>
     <p class="section-sub">Every piece is ready to deliver. No waiting, no assembly surprises — just quality furniture at your doorstep.</p>
-    <div class="products-grid" id="products-grid">
-      <!-- Loaded dynamically -->
+
+    <!-- Visual Search Banner -->
+    <div class="visual-search-banner">
+      <div class="visual-search-banner-left">
+        <div class="visual-search-banner-icon">🔍</div>
+        <div>
+          <div class="visual-search-banner-title">Search by Photo</div>
+          <div class="visual-search-banner-sub">Saw a furniture you liked? Upload a photo — our AI finds the closest match in our catalogue</div>
+        </div>
+      </div>
+      <button class="visual-search-banner-btn" onclick="openVisualSearch()">
+        📷 Search by Photo
+      </button>
     </div>
+
+    <div class="products-grid" id="products-grid"></div>
   </section>
 
   <!-- WHY US -->
@@ -981,36 +512,20 @@
     <h2 class="section-title" style="color:white; margin-bottom:12px;">Built on trust, delivered with care</h2>
     <p class="section-sub">We're not a big chain. We're your neighbourhood furniture store.</p>
     <div class="why-grid">
-      <div class="why-card reveal">
-        <div class="why-icon">🪵</div>
-        <div class="why-title">Quality Materials</div>
-        <div class="why-desc">MDF and solid wood construction built to last in Indian homes and climates.</div>
-      </div>
-      <div class="why-card reveal">
-        <div class="why-icon">💰</div>
-        <div class="why-title">Honest Pricing</div>
-        <div class="why-desc">No hidden costs. What you see is what you pay — always.</div>
-      </div>
-      <div class="why-card reveal">
-        <div class="why-icon">🚚</div>
-        <div class="why-title">Quick Delivery</div>
-        <div class="why-desc">Same-day or next-day delivery to Sarjapur Road and nearby areas.</div>
-      </div>
-      <div class="why-card reveal">
-        <div class="why-icon">🤖</div>
-        <div class="why-title">AI-Powered Shopping</div>
-        <div class="why-desc">Our ShopBot helps you find the right furniture 24/7 — even at midnight.</div>
-      </div>
+      <div class="why-card reveal"><div class="why-icon">🪵</div><div class="why-title">Quality Materials</div><div class="why-desc">MDF and solid wood construction built to last in Indian homes and climates.</div></div>
+      <div class="why-card reveal"><div class="why-icon">💰</div><div class="why-title">Honest Pricing</div><div class="why-desc">No hidden costs. What you see is what you pay — always.</div></div>
+      <div class="why-card reveal"><div class="why-icon">🚚</div><div class="why-title">Quick Delivery</div><div class="why-desc">Same-day or next-day delivery to Sarjapur Road and nearby areas.</div></div>
+      <div class="why-card reveal"><div class="why-icon">🤖</div><div class="why-title">AI-Powered Shopping</div><div class="why-desc">Our ShopBot helps you find the right furniture 24/7 — even at midnight.</div></div>
     </div>
   </section>
 
   <!-- ABOUT -->
   <section class="about-section" id="about">
     <div class="about-img-block reveal">
-      <div style="position:relative; z-index:1; text-align:center;">
-        <div style="font-size:56px; margin-bottom:8px;">🏪</div>
-        <div style="font-size:22px; color: var(--gold);">Royal Enterprises</div>
-        <div style="font-size:13px; color:rgba(255,255,255,0.5); margin-top:4px; font-family:'Inter',sans-serif; font-weight:400;">Dommasandra, Sarjapur Road</div>
+      <div style="position:relative;z-index:1;text-align:center;">
+        <div style="font-size:56px;margin-bottom:8px;">🏪</div>
+        <div style="font-size:22px;color:var(--gold);">Royal Enterprises</div>
+        <div style="font-size:13px;color:rgba(255,255,255,0.5);margin-top:4px;font-family:'Inter',sans-serif;font-weight:400;">Dommasandra, Sarjapur Road</div>
       </div>
       <div class="big-r">R</div>
     </div>
@@ -1020,24 +535,15 @@
       <p class="section-sub">We started Royal Enterprises with one simple belief — every family deserves beautiful furniture without paying showroom prices.</p>
       <div class="about-detail">
         <div class="about-detail-icon">📍</div>
-        <div class="about-detail-text">
-          <strong>Where to find us</strong>
-          Dommasandra, Sarjapur Road, Bangalore — easy to reach from Bellandur, Haralur, and Marathahalli.
-        </div>
+        <div class="about-detail-text"><strong>Where to find us</strong>Dommasandra, Sarjapur Road, Bangalore — easy to reach from Bellandur, Haralur, and Marathahalli.</div>
       </div>
       <div class="about-detail">
         <div class="about-detail-icon">🕐</div>
-        <div class="about-detail-text">
-          <strong>Store Hours</strong>
-          Open daily 10 AM – 8 PM. Our ShopBot is available 24/7 online.
-        </div>
+        <div class="about-detail-text"><strong>Store Hours</strong>Open daily 10 AM – 8 PM. Our ShopBot is available 24/7 online.</div>
       </div>
       <div class="about-detail">
         <div class="about-detail-icon">✅</div>
-        <div class="about-detail-text">
-          <strong>Ready-Made Only</strong>
-          No waiting weeks for custom orders. Everything is in stock and ready to deliver.
-        </div>
+        <div class="about-detail-text"><strong>Ready-Made Only</strong>No waiting weeks for custom orders. Everything is in stock and ready to deliver.</div>
       </div>
       <button class="btn-primary" style="margin-top:28px;" onclick="openChat()">Talk to ShopBot →</button>
     </div>
@@ -1047,32 +553,15 @@
   <section class="contact-section" id="contact">
     <div class="section-eyebrow">Get in Touch</div>
     <h2 class="section-title">We're here to help</h2>
-    <p class="section-sub" style="margin: 0 auto 0;">Visit us, call us, or just chat with ShopBot right now.</p>
+    <p class="section-sub" style="margin:0 auto 0;">Visit us, call us, or just chat with ShopBot right now.</p>
     <div class="contact-cards">
-      <div class="contact-card reveal">
-        <div class="contact-icon">📍</div>
-        <div class="contact-label">Location</div>
-        <div class="contact-value">Dommasandra,<br/>Sarjapur Road, Bangalore</div>
-      </div>
-      <div class="contact-card reveal">
-        <div class="contact-icon">📞</div>
-        <div class="contact-label">Call Us</div>
-        <div class="contact-value">Available on request</div>
-      </div>
-      <div class="contact-card reveal">
-        <div class="contact-icon">🕐</div>
-        <div class="contact-label">Store Hours</div>
-        <div class="contact-value">Mon–Sun<br/>10 AM – 8 PM</div>
-      </div>
-      <div class="contact-card reveal" style="cursor:pointer;" onclick="openChat()">
-        <div class="contact-icon">🤖</div>
-        <div class="contact-label">ShopBot AI</div>
-        <div class="contact-value" style="color:var(--gold);">Chat 24/7 →</div>
-      </div>
+      <div class="contact-card reveal"><div class="contact-icon">📍</div><div class="contact-label">Location</div><div class="contact-value">Dommasandra,<br/>Sarjapur Road, Bangalore</div></div>
+      <div class="contact-card reveal"><div class="contact-icon">📞</div><div class="contact-label">Call Us</div><div class="contact-value">Available on request</div></div>
+      <div class="contact-card reveal"><div class="contact-icon">🕐</div><div class="contact-label">Store Hours</div><div class="contact-value">Mon–Sun<br/>10 AM – 8 PM</div></div>
+      <div class="contact-card reveal" style="cursor:pointer;" onclick="openChat()"><div class="contact-icon">🤖</div><div class="contact-label">ShopBot AI</div><div class="contact-value" style="color:var(--gold);">Chat 24/7 →</div></div>
     </div>
   </section>
 
-  <!-- FOOTER -->
   <footer>
     <p>© 2026 Royal Enterprises, Bangalore. Powered by <span>ShopBot AI</span> · Built by <span>Neurix</span></p>
   </footer>
@@ -1085,13 +574,12 @@
 
   <!-- CHAT DRAWER -->
   <div class="chat-drawer" id="chat-drawer">
-    <!-- Info Overlay -->
     <div class="info-overlay" id="info-overlay">
       <div class="info-card">
         <div class="info-card-title">Welcome to Royal Enterprises 🛋️</div>
         <div class="info-card-sub">Tell us a little about yourself to get started</div>
-        <input id="c-name" class="info-input" type="text" placeholder="Your Name" />
-        <input id="c-phone" class="info-input" type="tel" placeholder="Phone Number" />
+        <input id="c-name" class="info-input" type="text" placeholder="Your Name"/>
+        <input id="c-phone" class="info-input" type="tel" placeholder="Phone Number"/>
         <button class="info-submit" onclick="startChat()">Start Shopping →</button>
         <div class="info-error" id="info-error">Please fill in both fields</div>
       </div>
@@ -1112,9 +600,14 @@
       <input id="drawer-input" class="drawer-input" type="text"
         placeholder="Ask about products, prices..."
         onkeydown="if(event.key==='Enter') sendMsg()" disabled/>
+      <!-- Camera button -->
+      <button class="drawer-camera" id="drawer-camera" onclick="openVisualSearchInChat()" disabled title="Search by photo">📷</button>
       <button class="drawer-send" id="drawer-send" onclick="sendMsg()" disabled>➤</button>
     </div>
   </div>
+
+  <!-- Hidden file input for visual search -->
+  <input type="file" id="vs-file-input" accept="image/*" style="display:none" onchange="onVsFileSelected(event)"/>
 
   <script>
     let chatOpen = false
@@ -1122,17 +615,14 @@
     let chatHistory = []
     let customerName = ''
     let customerPhone = ''
+    let catalogueCache = []
 
     // Hide tooltip after 4s
-    setTimeout(() => {
-      const t = document.getElementById('chat-tooltip')
-      if (t) t.style.display = 'none'
-    }, 4000)
+    setTimeout(() => { const t = document.getElementById('chat-tooltip'); if (t) t.style.display = 'none' }, 4000)
 
     function toggleChat() {
       chatOpen = !chatOpen
-      const drawer = document.getElementById('chat-drawer')
-      drawer.classList.toggle('open', chatOpen)
+      document.getElementById('chat-drawer').classList.toggle('open', chatOpen)
     }
 
     function openChat() {
@@ -1143,28 +633,25 @@
     function startChat() {
       const name = document.getElementById('c-name').value.trim()
       const phone = document.getElementById('c-phone').value.trim()
-      if (!name || !phone) {
-        document.getElementById('info-error').style.display = 'block'
-        return
-      }
-      customerName = name
-      customerPhone = phone
+      if (!name || !phone) { document.getElementById('info-error').style.display = 'block'; return }
+      customerName = name; customerPhone = phone
       document.getElementById('info-overlay').style.display = 'none'
       document.getElementById('drawer-input').disabled = false
       document.getElementById('drawer-send').disabled = false
+      document.getElementById('drawer-camera').disabled = false
       document.getElementById('drawer-input').focus()
       chatStarted = true
 
       addBotMsg(`👋 Hi ${name}! Welcome to Royal Enterprises. I'm ShopBot — ask me about our furniture, prices, or anything else!`)
       setTimeout(() => {
         const qr = document.createElement('div')
-        qr.className = 'quick-btns'
-        qr.id = 'quick-btns'
+        qr.className = 'quick-btns'; qr.id = 'quick-btns'
         qr.innerHTML = `
           <button class="quick-btn" onclick="quickSend('What products do you have?')">📦 All Products</button>
           <button class="quick-btn" onclick="quickSend('Show me budget options under ₹5000')">💰 Budget</button>
           <button class="quick-btn" onclick="quickSend('I need a wardrobe')">🗄️ Wardrobe</button>
           <button class="quick-btn" onclick="quickSend('Do you do home delivery?')">🚚 Delivery</button>
+          <button class="quick-btn" onclick="openVisualSearchInChat()">📷 Search by Photo</button>
         `
         document.getElementById('drawer-messages').appendChild(qr)
         scrollDrawer()
@@ -1181,28 +668,18 @@
       const input = document.getElementById('drawer-input')
       const msg = input.value.trim()
       if (!msg) return
-
-      addUserMsg(msg)
-      input.value = ''
-      showTyping()
+      addUserMsg(msg); input.value = ''; showTyping()
       chatHistory.push({ role: 'user', content: msg })
-
       try {
         const res = await fetch('/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            message: msg,
-            history: chatHistory.slice(0, -1),
-            customer_name: customerName,
-            customer_phone: customerPhone
-          })
+          body: JSON.stringify({ message: msg, history: chatHistory.slice(0, -1), customer_name: customerName, customer_phone: customerPhone })
         })
         const data = await res.json()
         removeTyping()
         addBotMsg(data.reply, data.image)
         chatHistory.push({ role: 'assistant', content: data.reply })
-
         if (data.order) {
           setTimeout(() => {
             const conf = document.createElement('div')
@@ -1222,13 +699,8 @@
       const box = document.getElementById('drawer-messages')
       const div = document.createElement('div')
       div.className = 'bubble-bot'
-      div.innerHTML = `
-        <div class="bubble-bot-inner">
-          ${text}
-          ${imageUrl ? `<img src="${imageUrl}" class="bubble-img"/>` : ''}
-        </div>`
-      box.appendChild(div)
-      scrollDrawer()
+      div.innerHTML = `<div class="bubble-bot-inner">${text}${imageUrl ? `<img src="${imageUrl}" class="bubble-img"/>` : ''}</div>`
+      box.appendChild(div); scrollDrawer()
     }
 
     function addUserMsg(text) {
@@ -1236,46 +708,154 @@
       const div = document.createElement('div')
       div.className = 'bubble-user'
       div.innerHTML = `<div class="bubble-user-inner">${text}</div>`
-      box.appendChild(div)
-      scrollDrawer()
+      box.appendChild(div); scrollDrawer()
     }
 
     function showTyping() {
       const box = document.getElementById('drawer-messages')
       const div = document.createElement('div')
-      div.id = 'typing'
-      div.className = 'bubble-bot'
+      div.id = 'typing'; div.className = 'bubble-bot'
       div.innerHTML = `<div class="typing-dots"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div>`
-      box.appendChild(div)
-      scrollDrawer()
+      box.appendChild(div); scrollDrawer()
     }
 
-    function removeTyping() {
-      document.getElementById('typing')?.remove()
-    }
+    function removeTyping() { document.getElementById('typing')?.remove() }
 
     function scrollDrawer() {
       const box = document.getElementById('drawer-messages')
       box.scrollTop = box.scrollHeight
     }
 
+    // ── VISUAL SEARCH ─────────────────────────────────────────
+
+    let vsMode = null // 'chat' or 'page'
+    let vsFile = null
+
+    // Opens visual search from chat camera button
+    function openVisualSearchInChat() {
+      if (!chatStarted) { openChat(); return }
+      vsMode = 'chat'
+      // Remove existing vs panel if any
+      document.getElementById('vs-chat-panel')?.remove()
+
+      const box = document.getElementById('drawer-messages')
+      const panel = document.createElement('div')
+      panel.id = 'vs-chat-panel'
+      panel.className = 'visual-search-msg'
+      panel.innerHTML = `
+        <div class="visual-search-msg-title">📷 Search by Photo</div>
+        <div class="vs-upload-zone" onclick="document.getElementById('vs-file-input').click()">
+          <div style="font-size:28px;">📸</div>
+          <div class="vs-upload-text">Click to upload a furniture photo<br/>AI will find the closest match</div>
+        </div>
+        <img id="vs-preview" class="vs-preview" alt="preview"/>
+        <button class="vs-search-btn" id="vs-search-btn" onclick="runVisualSearch()" disabled>🔍 Find Similar Furniture</button>
+      `
+      box.appendChild(panel)
+      scrollDrawer()
+    }
+
+    // Opens visual search from product page banner
+    function openVisualSearch() {
+      vsMode = 'page'
+      openChat()
+      if (!chatStarted) {
+        // Will open after login via startChat
+        return
+      }
+      openVisualSearchInChat()
+    }
+
+    function onVsFileSelected(event) {
+      vsFile = event.target.files[0]
+      if (!vsFile) return
+      const preview = document.getElementById('vs-preview')
+      if (preview) {
+        preview.src = URL.createObjectURL(vsFile)
+        preview.style.display = 'block'
+      }
+      const btn = document.getElementById('vs-search-btn')
+      if (btn) btn.disabled = false
+      // Reset input so same file can be selected again
+      document.getElementById('vs-file-input').value = ''
+    }
+
+    async function runVisualSearch() {
+      if (!vsFile) return
+      const btn = document.getElementById('vs-search-btn')
+      if (btn) { btn.disabled = true; btn.innerText = '🔍 Analysing...' }
+
+      showTyping()
+
+      const formData = new FormData()
+      formData.append('image', vsFile)
+
+      try {
+        const res = await fetch('/visual-search', { method: 'POST', body: formData })
+        const data = await res.json()
+        removeTyping()
+
+        // Remove the upload panel
+        document.getElementById('vs-chat-panel')?.remove()
+
+        if (data.status === 'error' || !data.matches || data.matches.length === 0) {
+          addBotMsg("I couldn't find a close match in our catalogue. Try a clearer photo or describe what you're looking for!")
+          return
+        }
+
+        // Show user message
+        addUserMsg('📷 [Searched by photo]')
+
+        // Show results
+        const box = document.getElementById('drawer-messages')
+        const resultDiv = document.createElement('div')
+        resultDiv.className = 'vs-result'
+        resultDiv.innerHTML = `
+          <div class="vs-result-title">🎯 Best matches for your photo</div>
+          ${data.matches.map(m => `
+            <div class="vs-match" onclick="quickSend('Tell me more about the ${m.name}')">
+              <div class="vs-match-img">
+                ${m.image ? `<img src="${m.image}" alt="${m.name}"/>` : '🪑'}
+              </div>
+              <div>
+                <div class="vs-match-name">${m.name}</div>
+                <div class="vs-match-price">₹${Number(m.price).toLocaleString('en-IN')}</div>
+                <div class="vs-match-desc">${m.match_reason}</div>
+              </div>
+            </div>
+          `).join('')}
+        `
+        box.appendChild(resultDiv)
+        scrollDrawer()
+
+        // Add AI message
+        setTimeout(() => {
+          addBotMsg(`I found ${data.matches.length} product${data.matches.length > 1 ? 's' : ''} similar to your photo! Tap any one to know more or place an order. 😊`)
+        }, 300)
+
+      } catch (err) {
+        removeTyping()
+        document.getElementById('vs-chat-panel')?.remove()
+        addBotMsg('Sorry, visual search failed. Please try again with a clearer photo.')
+      }
+    }
+
     // Load products
     async function loadProducts() {
       const res = await fetch('/catalogue')
       const products = await res.json()
+      catalogueCache = products
       const grid = document.getElementById('products-grid')
 
       if (products.length === 0) {
-        grid.innerHTML = '<p style="color:var(--text-light); grid-column:1/-1;">No products listed yet.</p>'
+        grid.innerHTML = '<p style="color:var(--text-light);grid-column:1/-1;">No products listed yet.</p>'
         return
       }
 
       grid.innerHTML = products.map((p, i) => `
         <div class="product-card reveal" style="animation-delay:${i * 0.08}s" onclick="openChatProduct('${p.name}')">
           <div class="product-img">
-            ${p.image
-              ? `<img src="${p.image}" alt="${p.name}"/>`
-              : `<span>🪑</span>`}
+            ${p.image ? `<img src="${p.image}" alt="${p.name}"/>` : `<span>🪑</span>`}
           </div>
           <div class="product-info">
             <div class="product-name">${p.name}</div>
@@ -1286,7 +866,6 @@
         </div>
       `).join('')
 
-      // Trigger reveal
       setTimeout(checkReveal, 100)
     }
 
@@ -1298,13 +877,10 @@
       }
     }
 
-    // Scroll reveal
     function checkReveal() {
       document.querySelectorAll('.reveal').forEach(el => {
         const rect = el.getBoundingClientRect()
-        if (rect.top < window.innerHeight - 80) {
-          el.classList.add('visible')
-        }
+        if (rect.top < window.innerHeight - 80) el.classList.add('visible')
       })
     }
 

@@ -13,7 +13,7 @@ from datetime import datetime
 
 app = FastAPI()
 
-GROQ_API_KEY = os.getenv("GROQ_API_KEY", ",")
+GROQ_API_KEY = "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"
 CATALOGUE_FILE = "catalogue.json"
 ORDERS_FILE = "orders.json"
 UPLOAD_DIR = "static/uploads"
@@ -222,59 +222,8 @@ def chat(req: ChatRequest):
 
     system_prompt = f"""You are ShopBot, a friendly AI sales assistant for Royal Enterprises — a ready-made furniture retail shop in Dommasandra, Sarjapur Road, Bangalore.
 
-SHOP CONTACT DETAILS (use these when customer asks how to contact, never use customer's own number):
-- Phone: +91 8553537786
-- Address: Royal Enterprises, Dommasandra, Sarjapur Road, Bangalore
-- Timings: 10 AM to 9 PM, all days
-
 You help customers find products, answer questions about prices, and confirm orders.
 Always respond in a helpful, warm, conversational tone. Use ₹ for prices.
-{f"You are talking to: {customer_info}" if customer_info else ""}
-
-CRITICAL: When a customer asks how to contact or asks for shop number — always give the SHOP contact details above, NEVER the customer's own phone number.
-
-IMPORTANT: Only recommend products that exist in the catalogue below. Never mention products not in the catalogue.
-If a product has out_of_stock: True, tell the customer it is currently unavailable and suggest the closest alternative.
-Remember the full conversation context.
-
-BUDGET RECOMMENDATIONS:
-If a customer mentions a budget (e.g. "I have ₹8000" or "under ₹15000" or "what can I get for ₹10000"):
-1. Look through the catalogue for products within that budget
-2. Suggest the best single item OR a smart combo (e.g. Dressing Table + Shoe Box) that fits the budget
-3. Show total cost of the combo
-4. Explain why this combo is a good choice
-5. Ask if they want to order any of it
-Example: Customer says "I have ₹7000" → suggest Dressing Table ₹4000 + Shoe Box ₹2800 = ₹6800 total, fits budget perfectly.
-
-MULTILINGUAL:
-Detect the language the customer is writing in. If they write in Hindi, reply in Hindi. If Kannada, reply in Kannada. If English, reply in English. If mixed, reply in English.
-
-PRODUCT COMPARISON:
-If customer asks to compare two products (e.g. "compare wardrobe and cupboard"):
-- DO NOT use markdown tables or | symbols — they don't render in chat
-- Format comparison like this:
-
-🪑 WARDROBE
-- Price: ₹10,500
-- Size: 3/6 feet
-- Best for: Large storage needs
-
-🪑 CUPBOARD
-- Price: ₹11,000
-- Size: 3/6 feet
-- Best for: Bedroom storage
-
-✅ Our recommendation: [give honest recommendation based on their needs]
-
-- Give a recommendation based on their needs
-
-When a customer confirms a purchase, respond with a clear order summary and add this exact line at the end:
-PLACE_ORDER:[product name]|[price]
-
-
-You help customers find products, answer questions about prices, and confirm orders.
-Always respond in a helpful, warm, conversational tone. Use ₹ for prices.
-CRITICAL: When a customer asks "how to contact you" or "shop number" or "your number" — always give the SHOP contact details above, NEVER the customer's own phone number.
 {f"You are talking to: {customer_info}" if customer_info else ""}
 IMPORTANT: Only recommend products that exist in the catalogue below. Never mention products not in the catalogue.
 If a product has out_of_stock: True, tell the customer it is currently unavailable and suggest the closest alternative.
@@ -500,28 +449,106 @@ async def confirm_scan(req: StockConfirmRequest):
         "not_found": not_found,
         "message": f"{len(updated)} item(s) updated in inventory."
     }
-# --- QR Code Generator ---
-import qrcode
-import io
-from fastapi.responses import StreamingResponse
 
-@app.get("/generate-qr")
-def generate_qr(url: str = "https://shopbot-ai-1009.onrender.com"):
-    qr = qrcode.QRCode(
-        version=1,
-        error_correction=qrcode.constants.ERROR_CORRECT_H,
-        box_size=10,
-        border=4,
-    )
-    qr.add_data(url)
-    qr.make(fit=True)
 
-    img = qr.make_image(fill_color="#3D2B1F", back_color="#FDF6ED")
+# ─────────────────────────────────────────────────────────────
+# VISUAL SEARCH — Customer searches by photo
+# ─────────────────────────────────────────────────────────────
 
-    buf = io.BytesIO()
-    img.save(buf, format="PNG")
-    buf.seek(0)
+@app.post("/visual-search")
+async def visual_search(image: UploadFile = File(...)):
+    """
+    Customer uploads a photo of furniture they like.
+    AI analyses it and returns closest matching products from catalogue.
+    """
+    catalogue = load_catalogue()
 
-    return StreamingResponse(buf, media_type="image/png", headers={
-        "Content-Disposition": "inline; filename=shopbot-qr.png"
-    })
+    if not catalogue:
+        return {"status": "error", "message": "No products in catalogue yet."}
+
+    catalogue_context = "\n".join([
+        f"- {p['name']} | ₹{p['price']} | {p['description']} | out_of_stock: {p.get('out_of_stock', False)}"
+        for p in catalogue
+    ])
+
+    image_bytes = await image.read()
+    base64_image = base64.b64encode(image_bytes).decode("utf-8")
+    mime_type = image.content_type or "image/jpeg"
+
+    vision_prompt = f"""You are a furniture matching assistant for Royal Enterprises, a furniture shop in Bangalore.
+
+A customer has uploaded a photo of furniture they like or saw somewhere. Your job is to:
+1. Analyse the furniture in the photo — identify type, style, color, size, material
+2. Find the BEST matching products from our catalogue below
+3. Return the top 1-3 closest matches with a brief reason why each matches
+
+CATALOGUE:
+{catalogue_context}
+
+RULES:
+- Only match to products in the catalogue above
+- Skip products marked as out_of_stock: True if possible, unless nothing else matches
+- match_reason should be 1 short sentence explaining the similarity (e.g. "Similar wood finish and size")
+- If the photo is not furniture or is unclear, return empty matches array
+
+Respond ONLY with valid JSON, no markdown, no explanation:
+{{
+  "detected": "brief description of furniture in photo",
+  "matches": [
+    {{
+      "name": "exact product name from catalogue",
+      "match_reason": "one sentence why this matches"
+    }}
+  ]
+}}"""
+
+    try:
+        response = client.chat.completions.create(
+            model="meta-llama/llama-4-scout-17b-16e-instruct",
+            messages=[
+                {
+                    "role": "user",
+                    "content": [
+                        {"type": "text", "text": vision_prompt},
+                        {"type": "image_url", "image_url": {"url": f"data:{mime_type};base64,{base64_image}"}}
+                    ]
+                }
+            ],
+            max_tokens=600,
+            temperature=0.1
+        )
+
+        raw = response.choices[0].message.content.strip()
+        if raw.startswith("```"):
+            raw = raw.split("```")[1]
+            if raw.startswith("json"):
+                raw = raw[4:]
+        raw = raw.strip()
+
+        result = json.loads(raw)
+
+        # Enrich matches with product details from catalogue
+        enriched = []
+        for match in result.get("matches", []):
+            for p in catalogue:
+                if p["name"].lower() == match["name"].lower():
+                    enriched.append({
+                        "name": p["name"],
+                        "price": p["price"],
+                        "image": p.get("image"),
+                        "description": p.get("description", ""),
+                        "match_reason": match.get("match_reason", "Similar style"),
+                        "out_of_stock": p.get("out_of_stock", False)
+                    })
+                    break
+
+        return {
+            "status": "success",
+            "detected": result.get("detected", ""),
+            "matches": enriched
+        }
+
+    except json.JSONDecodeError:
+        return {"status": "error", "message": "Could not parse AI response. Try a clearer photo."}
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"status": "error", "message": str(e)})
