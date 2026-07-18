@@ -1,57 +1,89 @@
 [
   {
     "name": "Wardrobe",
-    "price": 10500,
+    "price": 10500.0,
     "category": "Furniture",
     "description": "3/6 feet size wardrobe, available in different colors",
     "out_of_stock": false,
     "last_scanned_count": 1,
-    "last_scanned_at": "29 Jun 2026, 07:52 PM"
+    "last_scanned_at": "29 Jun 2026, 07:52 PM",
+    "images": [
+      "/static/uploads/a4582812dcc24206b16b3f59df2d6c34.png"
+    ],
+    "image": "/static/uploads/a4582812dcc24206b16b3f59df2d6c34.png"
   },
   {
     "name": "Dressing Table",
-    "price": 4000,
+    "price": 4000.0,
     "category": "Furniture",
     "description": "Available from \u00e2\u201a\u00b94000 to \u00e2\u201a\u00b97500, multiple sizes and designs",
     "out_of_stock": false,
     "last_scanned_count": 1,
-    "last_scanned_at": "29 Jun 2026, 08:00 PM"
+    "last_scanned_at": "29 Jun 2026, 08:00 PM",
+    "images": [
+      "/static/uploads/14215e3913804beeb8169a142c166bec.jpg"
+    ],
+    "image": "/static/uploads/14215e3913804beeb8169a142c166bec.jpg"
   },
   {
     "name": "Office Table",
-    "price": 5500,
+    "price": 5500.0,
     "category": "Furniture",
-    "description": "2/4 feet size office table, sturdy and spacious"
+    "description": "2/4 feet size office table, sturdy and spacious",
+    "images": [
+      "/static/uploads/2c00039bf4b14e8ca5bd781f7b6f55dc.jpg"
+    ],
+    "image": "/static/uploads/2c00039bf4b14e8ca5bd781f7b6f55dc.jpg"
   },
   {
     "name": "Diwaan",
-    "price": 6000,
+    "price": 6000.0,
     "category": "Furniture",
-    "description": "2 door, 2.5/6 feet size diwaan, great for living rooms"
+    "description": "2 door, 2.5/6 feet size diwaan, great for living rooms",
+    "images": [
+      "/static/uploads/828c9f9d6d6c4696a3db68cb1d7ac8fe.jpg"
+    ],
+    "image": "/static/uploads/828c9f9d6d6c4696a3db68cb1d7ac8fe.jpg"
   },
   {
     "name": "MDF Folding Cot",
-    "price": 5000,
+    "price": 5000.0,
     "category": "Furniture",
-    "description": "4/6 feet size folding cot, space saving and sturdy"
+    "description": "4/6 feet size folding cot, space saving and sturdy",
+    "images": [
+      "/static/uploads/cfdec5ba09b243e5b918d0925b9c7635.jpg"
+    ],
+    "image": "/static/uploads/cfdec5ba09b243e5b918d0925b9c7635.jpg"
   },
   {
     "name": "Book Box",
-    "price": 2800,
+    "price": 2800.0,
     "category": "Furniture",
-    "description": "2/2 feet size book box, perfect for storage"
+    "description": "2/2 feet size book box, perfect for storage",
+    "images": [
+      "/static/uploads/665cee3cdee04c6bb2347180e93a34eb.jpg"
+    ],
+    "image": "/static/uploads/665cee3cdee04c6bb2347180e93a34eb.jpg"
   },
   {
     "name": "TV Table",
-    "price": 5200,
+    "price": 5200.0,
     "category": "Furniture",
-    "description": "4 feet TV table, modern design with storage space"
+    "description": "4 feet TV table, modern design with storage space",
+    "images": [
+      "/static/uploads/cf0f30632b6443ad8533eb369297da79.jpg"
+    ],
+    "image": "/static/uploads/cf0f30632b6443ad8533eb369297da79.jpg"
   },
   {
     "name": "Mandir",
-    "price": 2800,
+    "price": 2800.0,
     "category": "Furniture",
-    "description": "Available from \u00e2\u201a\u00b92800 to \u00e2\u201a\u00b910500, multiple sizes and designs"
+    "description": "Available from \u00e2\u201a\u00b92800 to \u00e2\u201a\u00b910500, multiple sizes and designs",
+    "images": [
+      "/static/uploads/4a089054c69d43b49e0f9aec1ed9851c.jpg"
+    ],
+    "image": "/static/uploads/4a089054c69d43b49e0f9aec1ed9851c.jpg"
   },
   {
     "name": "2 Door Cupboard",
