@@ -9,11 +9,14 @@ import shutil
 import os
 import uuid
 import base64
+import qrcode
+import io
+from fastapi.responses import StreamingResponse
 from datetime import datetime
 
 app = FastAPI()
 
-GROQ_API_KEY = os.getenv("GROQ_API_KEY", ",")
+GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
 CATALOGUE_FILE = "catalogue.json"
 ORDERS_FILE = "orders.json"
 UPLOAD_DIR = "static/uploads"
@@ -43,6 +46,14 @@ def save_orders(data):
     with open(ORDERS_FILE, "w") as f:
         json.dump(data, f, indent=2)
 
+def save_upload(file) -> str:
+    ext = file.filename.split(".")[-1].lower()
+    filename = f"{uuid.uuid4().hex}.{ext}"
+    filepath = os.path.join(UPLOAD_DIR, filename)
+    with open(filepath, "wb") as f:
+        shutil.copyfileobj(file.file, f)
+    return f"/static/uploads/{filename}"
+
 class Message(BaseModel):
     role: str
     content: str
@@ -60,7 +71,7 @@ class OrderUpdate(BaseModel):
     status: str
 
 class StockConfirmRequest(BaseModel):
-    items: list  # list of confirmed items from scanner
+    items: list
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
@@ -72,14 +83,14 @@ def root():
 def owner_page():
     return FileResponse("static/owner.html")
 
-# --- Auth ---
+# ── Auth ──────────────────────────────────────────────────────
 @app.post("/auth/login")
 def login(req: LoginRequest):
     if req.password == OWNER_PASSWORD:
         return {"status": "success"}
     return JSONResponse(status_code=401, content={"status": "error", "message": "Wrong password"})
 
-# --- Catalogue ---
+# ── Catalogue ─────────────────────────────────────────────────
 @app.get("/catalogue")
 def get_catalogue():
     return load_catalogue()
@@ -90,24 +101,21 @@ async def add_product(
     price: float = Form(...),
     category: str = Form(...),
     description: str = Form(...),
-    image: Optional[UploadFile] = File(None)
+    images: List[UploadFile] = File(default=[])
 ):
     catalogue = load_catalogue()
-    image_url = None
-    if image and image.filename:
-        ext = image.filename.split(".")[-1]
-        filename = f"{uuid.uuid4().hex}.{ext}"
-        filepath = os.path.join(UPLOAD_DIR, filename)
-        with open(filepath, "wb") as f:
-            shutil.copyfileobj(image.file, f)
-        image_url = f"/static/uploads/{filename}"
+    image_urls = []
+    for img in images:
+        if img and img.filename:
+            image_urls.append(save_upload(img))
 
     product = {
         "name": name,
         "price": price,
         "category": category,
         "description": description,
-        "image": image_url,
+        "image": image_urls[0] if image_urls else None,   # primary image (backwards compat)
+        "images": image_urls,                              # all images
         "out_of_stock": False
     }
     catalogue.append(product)
@@ -119,10 +127,14 @@ def delete_product(index: int):
     catalogue = load_catalogue()
     if 0 <= index < len(catalogue):
         product = catalogue[index]
-        if product.get("image"):
-            filepath = product["image"].lstrip("/")
-            if os.path.exists(filepath):
-                os.remove(filepath)
+        for url in product.get("images", []):
+            path = url.lstrip("/")
+            if os.path.exists(path):
+                os.remove(path)
+        if product.get("image") and product["image"] not in product.get("images", []):
+            path = product["image"].lstrip("/")
+            if os.path.exists(path):
+                os.remove(path)
         catalogue.pop(index)
         save_catalogue(catalogue)
         return {"status": "deleted"}
@@ -144,22 +156,25 @@ async def edit_product(
     price: float = Form(...),
     category: str = Form(...),
     description: str = Form(...),
-    image: Optional[UploadFile] = File(None)
+    images: List[UploadFile] = File(default=[])
 ):
     catalogue = load_catalogue()
     if 0 <= index < len(catalogue):
         existing = catalogue[index]
-        if image and image.filename:
-            if existing.get("image"):
-                old_path = existing["image"].lstrip("/")
-                if os.path.exists(old_path):
-                    os.remove(old_path)
-            ext = image.filename.split(".")[-1]
-            filename = f"{uuid.uuid4().hex}.{ext}"
-            filepath = os.path.join(UPLOAD_DIR, filename)
-            with open(filepath, "wb") as f:
-                shutil.copyfileobj(image.file, f)
-            existing["image"] = f"/static/uploads/{filename}"
+        new_images = []
+        for img in images:
+            if img and img.filename:
+                new_images.append(save_upload(img))
+
+        if new_images:
+            # Delete old images
+            for url in existing.get("images", []):
+                path = url.lstrip("/")
+                if os.path.exists(path):
+                    os.remove(path)
+            existing["images"] = new_images
+            existing["image"] = new_images[0]
+
         existing["name"] = name
         existing["price"] = price
         existing["category"] = category
@@ -169,7 +184,48 @@ async def edit_product(
         return {"status": "updated", "product": existing}
     return {"status": "error"}
 
-# --- Orders ---
+@app.post("/catalogue/{index}/add-images")
+async def add_images_to_product(
+    index: int,
+    images: List[UploadFile] = File(...)
+):
+    """Add more images to an existing product without replacing existing ones"""
+    catalogue = load_catalogue()
+    if 0 <= index < len(catalogue):
+        existing_images = catalogue[index].get("images", [])
+        if catalogue[index].get("image") and not existing_images:
+            existing_images = [catalogue[index]["image"]]
+
+        for img in images:
+            if img and img.filename:
+                existing_images.append(save_upload(img))
+
+        catalogue[index]["images"] = existing_images
+        catalogue[index]["image"] = existing_images[0] if existing_images else None
+        save_catalogue(catalogue)
+        return {"status": "updated", "images": existing_images}
+    return {"status": "error"}
+
+@app.delete("/catalogue/{index}/image/{img_index}")
+def delete_product_image(index: int, img_index: int):
+    """Delete a specific image from a product"""
+    catalogue = load_catalogue()
+    if 0 <= index < len(catalogue):
+        images = catalogue[index].get("images", [])
+        if catalogue[index].get("image") and not images:
+            images = [catalogue[index]["image"]]
+        if 0 <= img_index < len(images):
+            path = images[img_index].lstrip("/")
+            if os.path.exists(path):
+                os.remove(path)
+            images.pop(img_index)
+            catalogue[index]["images"] = images
+            catalogue[index]["image"] = images[0] if images else None
+            save_catalogue(catalogue)
+            return {"status": "deleted", "images": images}
+    return {"status": "error"}
+
+# ── Orders ────────────────────────────────────────────────────
 @app.get("/orders")
 def get_orders():
     return load_orders()
@@ -201,11 +257,10 @@ def delete_order(order_id: str):
     save_orders(orders)
     return {"status": "deleted"}
 
-# --- Chat ---
+# ── Chat ──────────────────────────────────────────────────────
 @app.post("/chat")
 def chat(req: ChatRequest):
     catalogue = load_catalogue()
-
     if not catalogue:
         return {"reply": "No products available yet.", "image": None, "order": None}
 
@@ -222,12 +277,49 @@ def chat(req: ChatRequest):
 
     system_prompt = f"""You are ShopBot, a friendly AI sales assistant for Royal Enterprises — a ready-made furniture retail shop in Dommasandra, Sarjapur Road, Bangalore.
 
+SHOP CONTACT DETAILS (use these when customer asks how to contact, never use customer's own number):
+- Phone: +91 8553537786
+- Address: Royal Enterprises, Dommasandra, Sarjapur Road, Bangalore
+- Timings: 10 AM to 9 PM, all days
+
 You help customers find products, answer questions about prices, and confirm orders.
 Always respond in a helpful, warm, conversational tone. Use ₹ for prices.
 {f"You are talking to: {customer_info}" if customer_info else ""}
+
+CRITICAL: When a customer asks how to contact or asks for shop number — always give the SHOP contact details above, NEVER the customer's own phone number.
+
 IMPORTANT: Only recommend products that exist in the catalogue below. Never mention products not in the catalogue.
 If a product has out_of_stock: True, tell the customer it is currently unavailable and suggest the closest alternative.
 Remember the full conversation context.
+
+BUDGET RECOMMENDATIONS:
+If a customer mentions a budget (e.g. "I have ₹8000" or "under ₹15000" or "what can I get for ₹10000"):
+1. Look through the catalogue for products within that budget
+2. Suggest the best single item OR a smart combo (e.g. Dressing Table + Shoe Box) that fits the budget
+3. Show total cost of the combo
+4. Explain why this combo is a good choice
+5. Ask if they want to order any of it
+
+MULTILINGUAL:
+Detect the language the customer is writing in. If they write in Hindi, reply in Hindi. If Kannada, reply in Kannada. If English, reply in English. If mixed, reply in English.
+
+PRODUCT COMPARISON:
+If customer asks to compare two products (e.g. "compare wardrobe and cupboard"):
+- DO NOT use markdown tables or | symbols — they don't render in chat
+- Format comparison like this:
+
+🪑 PRODUCT A
+- Price: ₹X
+- Size: X feet
+- Best for: X
+
+🪑 PRODUCT B
+- Price: ₹X
+- Size: X feet
+- Best for: X
+
+✅ Our recommendation: [give honest recommendation based on their needs]
+
 When a customer confirms a purchase, respond with a clear order summary and add this exact line at the end:
 PLACE_ORDER:[product name]|[price]
 
@@ -285,51 +377,124 @@ SHOP CATALOGUE:
 
     return {"reply": reply, "image": image_url, "order": order_data}
 
+# ── Visual Search ──────────────────────────────────────────────
+@app.post("/visual-search")
+async def visual_search(image: UploadFile = File(...)):
+    catalogue = load_catalogue()
+    if not catalogue:
+        return {"status": "error", "message": "No products in catalogue yet."}
 
-# ─────────────────────────────────────────────────────────────
-# AI VISION INVENTORY SCANNER
-# ─────────────────────────────────────────────────────────────
+    catalogue_context = "\n".join([
+        f"- {p['name']} | ₹{p['price']} | {p['description']} | out_of_stock: {p.get('out_of_stock', False)}"
+        for p in catalogue
+    ])
 
+    image_bytes = await image.read()
+    base64_image = base64.b64encode(image_bytes).decode("utf-8")
+    mime_type = image.content_type or "image/jpeg"
+
+    vision_prompt = f"""You are a furniture matching assistant for Royal Enterprises, a furniture shop in Bangalore.
+
+A customer uploaded a photo of furniture they like. Your job:
+1. Analyse the furniture in the photo — type, style, color, size, material
+2. Find the BEST matching products from our catalogue
+3. Return top 1-3 closest matches with a brief reason
+
+CATALOGUE:
+{catalogue_context}
+
+RULES:
+- Only match to products in the catalogue
+- Prefer in-stock items (out_of_stock: False)
+- match_reason = 1 short sentence explaining similarity
+- If photo is not furniture or unclear, return empty matches array
+
+Respond ONLY with valid JSON, no markdown:
+{{
+  "detected": "brief description of furniture in photo",
+  "matches": [
+    {{
+      "name": "exact product name from catalogue",
+      "match_reason": "one sentence why this matches"
+    }}
+  ]
+}}"""
+
+    try:
+        response = client.chat.completions.create(
+            model="meta-llama/llama-4-scout-17b-16e-instruct",
+            messages=[{
+                "role": "user",
+                "content": [
+                    {"type": "text", "text": vision_prompt},
+                    {"type": "image_url", "image_url": {"url": f"data:{mime_type};base64,{base64_image}"}}
+                ]
+            }],
+            max_tokens=600,
+            temperature=0.1
+        )
+
+        raw = response.choices[0].message.content.strip()
+        if raw.startswith("```"):
+            raw = raw.split("```")[1]
+            if raw.startswith("json"):
+                raw = raw[4:]
+        raw = raw.strip()
+
+        result = json.loads(raw)
+        enriched = []
+        for match in result.get("matches", []):
+            for p in catalogue:
+                if p["name"].lower() == match["name"].lower():
+                    enriched.append({
+                        "name": p["name"],
+                        "price": p["price"],
+                        "image": p.get("image"),
+                        "images": p.get("images", [p["image"]] if p.get("image") else []),
+                        "description": p.get("description", ""),
+                        "match_reason": match.get("match_reason", "Similar style"),
+                        "out_of_stock": p.get("out_of_stock", False)
+                    })
+                    break
+
+        return {"status": "success", "detected": result.get("detected", ""), "matches": enriched}
+
+    except json.JSONDecodeError:
+        return {"status": "error", "message": "Could not parse AI response. Try a clearer photo."}
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"status": "error", "message": str(e)})
+
+# ── AI Inventory Scanner ───────────────────────────────────────
 @app.post("/scan-inventory")
 async def scan_inventory(image: UploadFile = File(...)):
-    """
-    Takes a warehouse photo, uses Groq Llama 4 Scout vision to detect
-    furniture items and match them against the Royal Enterprises catalogue.
-    Returns detected items with suggested name, color, size, count.
-    Human confirmation required before stock is updated.
-    """
     catalogue = load_catalogue()
-
-    # Build catalogue context for the AI
-    catalogue_names = list(set([p["name"] for p in catalogue]))
     catalogue_context = "\n".join([
         f"- {p['name']} | ₹{p['price']} | {p['description']}"
         for p in catalogue
     ])
 
-    # Read and encode image as base64
     image_bytes = await image.read()
     base64_image = base64.b64encode(image_bytes).decode("utf-8")
     mime_type = image.content_type or "image/jpeg"
 
     vision_prompt = f"""You are an AI inventory scanner for Royal Enterprises, a furniture shop in Bangalore.
 
-Your job is to look at this warehouse photo and identify all visible furniture items.
+Look at this warehouse photo and identify all visible furniture items.
 
-KNOWN CATALOGUE ITEMS (match only to these):
+KNOWN CATALOGUE ITEMS:
 {catalogue_context}
 
 INSTRUCTIONS:
-1. Identify each distinct furniture piece visible in the image
-2. Match each piece to the closest catalogue item name
+1. Identify each distinct furniture piece visible
+2. Match each to the closest catalogue item name
 3. Estimate color (e.g. Jungle Wood, White, Black, Tomato, White Marble)
-4. Estimate size if possible (e.g. 3 feet, 6 feet, 4 feet) — say "Unknown" if not clear
+4. Estimate size if possible — say "Unknown" if not clear
 5. Count how many units of each item are visible
 6. Give a confidence score: High / Medium / Low
 
-IMPORTANT: Only match to items in the catalogue above. Do not invent product names.
+Only match to items in the catalogue. Do not invent product names.
 
-Respond ONLY with valid JSON in this exact format, no explanation, no markdown:
+Respond ONLY with valid JSON, no markdown:
 {{
   "detected_items": [
     {{
@@ -340,36 +505,24 @@ Respond ONLY with valid JSON in this exact format, no explanation, no markdown:
       "confidence": "High"
     }}
   ],
-  "scan_notes": "any useful observation about the photo quality or visibility"
+  "scan_notes": "any useful observation about photo quality or visibility"
 }}"""
 
     try:
         response = client.chat.completions.create(
             model="meta-llama/llama-4-scout-17b-16e-instruct",
-            messages=[
-                {
-                    "role": "user",
-                    "content": [
-                        {
-                            "type": "text",
-                            "text": vision_prompt
-                        },
-                        {
-                            "type": "image_url",
-                            "image_url": {
-                                "url": f"data:{mime_type};base64,{base64_image}"
-                            }
-                        }
-                    ]
-                }
-            ],
+            messages=[{
+                "role": "user",
+                "content": [
+                    {"type": "text", "text": vision_prompt},
+                    {"type": "image_url", "image_url": {"url": f"data:{mime_type};base64,{base64_image}"}}
+                ]
+            }],
             max_tokens=1000,
             temperature=0.1
         )
 
         raw = response.choices[0].message.content.strip()
-
-        # Strip markdown fences if present
         if raw.startswith("```"):
             raw = raw.split("```")[1]
             if raw.startswith("json"):
@@ -377,8 +530,6 @@ Respond ONLY with valid JSON in this exact format, no explanation, no markdown:
         raw = raw.strip()
 
         result = json.loads(raw)
-
-        # Enrich with catalogue match info (price, existing stock)
         enriched_items = []
         for item in result.get("detected_items", []):
             matched_product = None
@@ -401,7 +552,6 @@ Respond ONLY with valid JSON in this exact format, no explanation, no markdown:
         }
 
     except json.JSONDecodeError:
-        # If AI didn't return clean JSON, return raw text for debugging
         return {
             "status": "parse_error",
             "raw_response": raw,
@@ -409,18 +559,10 @@ Respond ONLY with valid JSON in this exact format, no explanation, no markdown:
             "scan_notes": "AI response could not be parsed. Try a clearer photo."
         }
     except Exception as e:
-        return JSONResponse(
-            status_code=500,
-            content={"status": "error", "message": str(e)}
-        )
-
+        return JSONResponse(status_code=500, content={"status": "error", "message": str(e)})
 
 @app.post("/scan-inventory/confirm")
 async def confirm_scan(req: StockConfirmRequest):
-    """
-    After human reviews detected items, confirm updates stock.
-    Each item in req.items: { catalogue_name, count, mark_in_stock: true/false }
-    """
     catalogue = load_catalogue()
     updated = []
     not_found = []
@@ -429,10 +571,8 @@ async def confirm_scan(req: StockConfirmRequest):
         found = False
         for i, product in enumerate(catalogue):
             if product["name"].lower() == item["catalogue_name"].lower():
-                # Mark as in stock if it was out of stock
                 if item.get("mark_in_stock", True):
                     catalogue[i]["out_of_stock"] = False
-                # Store scanned count as metadata
                 catalogue[i]["last_scanned_count"] = item.get("count", 1)
                 catalogue[i]["last_scanned_at"] = datetime.now().strftime("%d %b %Y, %I:%M %p")
                 updated.append(product["name"])
@@ -442,7 +582,6 @@ async def confirm_scan(req: StockConfirmRequest):
             not_found.append(item["catalogue_name"])
 
     save_catalogue(catalogue)
-
     return {
         "status": "success",
         "updated": updated,
@@ -450,105 +589,21 @@ async def confirm_scan(req: StockConfirmRequest):
         "message": f"{len(updated)} item(s) updated in inventory."
     }
 
-
-# ─────────────────────────────────────────────────────────────
-# VISUAL SEARCH — Customer searches by photo
-# ─────────────────────────────────────────────────────────────
-
-@app.post("/visual-search")
-async def visual_search(image: UploadFile = File(...)):
-    """
-    Customer uploads a photo of furniture they like.
-    AI analyses it and returns closest matching products from catalogue.
-    """
-    catalogue = load_catalogue()
-
-    if not catalogue:
-        return {"status": "error", "message": "No products in catalogue yet."}
-
-    catalogue_context = "\n".join([
-        f"- {p['name']} | ₹{p['price']} | {p['description']} | out_of_stock: {p.get('out_of_stock', False)}"
-        for p in catalogue
-    ])
-
-    image_bytes = await image.read()
-    base64_image = base64.b64encode(image_bytes).decode("utf-8")
-    mime_type = image.content_type or "image/jpeg"
-
-    vision_prompt = f"""You are a furniture matching assistant for Royal Enterprises, a furniture shop in Bangalore.
-
-A customer has uploaded a photo of furniture they like or saw somewhere. Your job is to:
-1. Analyse the furniture in the photo — identify type, style, color, size, material
-2. Find the BEST matching products from our catalogue below
-3. Return the top 1-3 closest matches with a brief reason why each matches
-
-CATALOGUE:
-{catalogue_context}
-
-RULES:
-- Only match to products in the catalogue above
-- Skip products marked as out_of_stock: True if possible, unless nothing else matches
-- match_reason should be 1 short sentence explaining the similarity (e.g. "Similar wood finish and size")
-- If the photo is not furniture or is unclear, return empty matches array
-
-Respond ONLY with valid JSON, no markdown, no explanation:
-{{
-  "detected": "brief description of furniture in photo",
-  "matches": [
-    {{
-      "name": "exact product name from catalogue",
-      "match_reason": "one sentence why this matches"
-    }}
-  ]
-}}"""
-
-    try:
-        response = client.chat.completions.create(
-            model="meta-llama/llama-4-scout-17b-16e-instruct",
-            messages=[
-                {
-                    "role": "user",
-                    "content": [
-                        {"type": "text", "text": vision_prompt},
-                        {"type": "image_url", "image_url": {"url": f"data:{mime_type};base64,{base64_image}"}}
-                    ]
-                }
-            ],
-            max_tokens=600,
-            temperature=0.1
-        )
-
-        raw = response.choices[0].message.content.strip()
-        if raw.startswith("```"):
-            raw = raw.split("```")[1]
-            if raw.startswith("json"):
-                raw = raw[4:]
-        raw = raw.strip()
-
-        result = json.loads(raw)
-
-        # Enrich matches with product details from catalogue
-        enriched = []
-        for match in result.get("matches", []):
-            for p in catalogue:
-                if p["name"].lower() == match["name"].lower():
-                    enriched.append({
-                        "name": p["name"],
-                        "price": p["price"],
-                        "image": p.get("image"),
-                        "description": p.get("description", ""),
-                        "match_reason": match.get("match_reason", "Similar style"),
-                        "out_of_stock": p.get("out_of_stock", False)
-                    })
-                    break
-
-        return {
-            "status": "success",
-            "detected": result.get("detected", ""),
-            "matches": enriched
-        }
-
-    except json.JSONDecodeError:
-        return {"status": "error", "message": "Could not parse AI response. Try a clearer photo."}
-    except Exception as e:
-        return JSONResponse(status_code=500, content={"status": "error", "message": str(e)})
+# ── QR Code ───────────────────────────────────────────────────
+@app.get("/generate-qr")
+def generate_qr(url: str = "https://shopbot-ai-1009.onrender.com"):
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_H,
+        box_size=10,
+        border=4,
+    )
+    qr.add_data(url)
+    qr.make(fit=True)
+    img = qr.make_image(fill_color="#3D2B1F", back_color="#FDF6ED")
+    buf = io.BytesIO()
+    img.save(buf, format="PNG")
+    buf.seek(0)
+    return StreamingResponse(buf, media_type="image/png", headers={
+        "Content-Disposition": "inline; filename=shopbot-qr.png"
+    })
