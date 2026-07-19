@@ -335,12 +335,15 @@ SHOP CATALOGUE:
     messages.append({"role": "user", "content": req.message})
 
     response = client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
+        model="qwen/qwen3.6-27b",
         messages=messages,
         max_tokens=500
     )
 
     reply = response.choices[0].message.content
+    # Strip thinking block from qwen model
+    if "</think>" in reply:
+        reply = reply.split("</think>")[-1].strip()
     image_url = None
     order_data = None
 
@@ -422,7 +425,7 @@ Respond ONLY with valid JSON, no markdown:
 
     try:
         response = client.chat.completions.create(
-            model="llama/llama-4-scout-17b-16e-instruct",
+            model="qwen/qwen3.6-27b",
             messages=[{
                 "role": "user",
                 "content": [
@@ -435,6 +438,13 @@ Respond ONLY with valid JSON, no markdown:
         )
 
         raw = response.choices[0].message.content.strip()
+        if "<think>" in raw and "</think>" in raw:
+            raw = raw.split("</think>", 1)[1].strip()
+        elif "<think>" in raw:
+            # thinking block didn't close — extract JSON manually
+            import re
+            json_match = re.search(r'\{[\s\S]*\}', raw)
+            raw = json_match.group(0) if json_match else raw
         if raw.startswith("```"):
             raw = raw.split("```")[1]
             if raw.startswith("json"):
@@ -510,7 +520,7 @@ Respond ONLY with valid JSON, no markdown:
 
     try:
         response = client.chat.completions.create(
-            model="meta-llama/llama-4-scout-17b-16e-instruct",
+            model="qwen/qwen3.6-27b",
             messages=[{
                 "role": "user",
                 "content": [
@@ -523,6 +533,13 @@ Respond ONLY with valid JSON, no markdown:
         )
 
         raw = response.choices[0].message.content.strip()
+        if "<think>" in raw and "</think>" in raw:
+            raw = raw.split("</think>", 1)[1].strip()
+        elif "<think>" in raw:
+            # thinking block didn't close — extract JSON manually
+            import re
+            json_match = re.search(r'\{[\s\S]*\}', raw)
+            raw = json_match.group(0) if json_match else raw
         if raw.startswith("```"):
             raw = raw.split("```")[1]
             if raw.startswith("json"):
@@ -556,8 +573,9 @@ Respond ONLY with valid JSON, no markdown:
             "status": "parse_error",
             "raw_response": raw,
             "detected_items": [],
-            "scan_notes": "AI response could not be parsed. Try a clearer photo."
+            "scan_notes": f"RAW: {raw[:500]}"
         }
+        
     except Exception as e:
         return JSONResponse(status_code=500, content={"status": "error", "message": str(e)})
 

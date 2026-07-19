@@ -34,7 +34,10 @@
     "images": [
       "/static/uploads/2c00039bf4b14e8ca5bd781f7b6f55dc.jpg"
     ],
-    "image": "/static/uploads/2c00039bf4b14e8ca5bd781f7b6f55dc.jpg"
+    "image": "/static/uploads/2c00039bf4b14e8ca5bd781f7b6f55dc.jpg",
+    "out_of_stock": false,
+    "last_scanned_count": 1,
+    "last_scanned_at": "19 Jul 2026, 01:21 PM"
   },
   {
     "name": "Diwaan",
