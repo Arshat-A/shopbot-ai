@@ -1,0 +1,22 @@
+{
+  "name": "Royal Enterprises — Owner",
+  "short_name": "RE Owner",
+  "description": "Owner dashboard for Royal Enterprises",
+  "start_url": "/owner",
+  "display": "standalone",
+  "background_color": "#FDF6ED",
+  "theme_color": "#3D2B1F",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/static/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/static/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

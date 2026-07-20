@@ -236,6 +236,15 @@
 
     @keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
   </style>
+  <link rel="manifest" href="/manifest-owner.json"/>
+<meta name="theme-color" content="#3D2B1F"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-title" content="RE Owner"/>
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js')
+  }
+</script>
 </head>
 <body>
 

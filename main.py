@@ -54,6 +54,21 @@ def save_upload(file) -> str:
         shutil.copyfileobj(file.file, f)
     return f"/static/uploads/{filename}"
 
+def strip_thinking(raw: str) -> str:
+    """Remove Qwen's <think>...</think> block from a raw model response."""
+    raw = raw.strip()
+    if "<think>" in raw and "</think>" in raw:
+        raw = raw.split("</think>", 1)[1].strip()
+    elif "<think>" in raw:
+        import re
+        json_match = re.search(r'\{[\s\S]*\}', raw)
+        raw = json_match.group(0) if json_match else raw
+    if raw.startswith("```"):
+        raw = raw.split("```")[1]
+        if raw.startswith("json"):
+            raw = raw[4:]
+    return raw.strip()
+
 class Message(BaseModel):
     role: str
     content: str
@@ -83,6 +98,10 @@ def root():
 def owner_page():
     return FileResponse("static/owner.html")
 
+@app.get("/quick-add")
+def quick_add_page():
+    return FileResponse("static/quick-add.html")
+
 # ── Auth ──────────────────────────────────────────────────────
 @app.post("/auth/login")
 def login(req: LoginRequest):
@@ -101,6 +120,8 @@ async def add_product(
     price: float = Form(...),
     category: str = Form(...),
     description: str = Form(...),
+    size: str = Form(""),
+    color: str = Form(""),
     images: List[UploadFile] = File(default=[])
 ):
     catalogue = load_catalogue()
@@ -114,6 +135,8 @@ async def add_product(
         "price": price,
         "category": category,
         "description": description,
+        "size": size,
+        "color": color,
         "image": image_urls[0] if image_urls else None,   # primary image (backwards compat)
         "images": image_urls,                              # all images
         "out_of_stock": False
@@ -156,6 +179,8 @@ async def edit_product(
     price: float = Form(...),
     category: str = Form(...),
     description: str = Form(...),
+    size: str = Form(""),
+    color: str = Form(""),
     images: List[UploadFile] = File(default=[])
 ):
     catalogue = load_catalogue()
@@ -179,6 +204,8 @@ async def edit_product(
         existing["price"] = price
         existing["category"] = category
         existing["description"] = description
+        existing["size"] = size
+        existing["color"] = color
         catalogue[index] = existing
         save_catalogue(catalogue)
         return {"status": "updated", "product": existing}
@@ -437,20 +464,7 @@ Respond ONLY with valid JSON, no markdown:
             temperature=0.1
         )
 
-        raw = response.choices[0].message.content.strip()
-        if "<think>" in raw and "</think>" in raw:
-            raw = raw.split("</think>", 1)[1].strip()
-        elif "<think>" in raw:
-            # thinking block didn't close — extract JSON manually
-            import re
-            json_match = re.search(r'\{[\s\S]*\}', raw)
-            raw = json_match.group(0) if json_match else raw
-        if raw.startswith("```"):
-            raw = raw.split("```")[1]
-            if raw.startswith("json"):
-                raw = raw[4:]
-        raw = raw.strip()
-
+        raw = strip_thinking(response.choices[0].message.content)
         result = json.loads(raw)
         enriched = []
         for match in result.get("matches", []):
@@ -532,20 +546,7 @@ Respond ONLY with valid JSON, no markdown:
             temperature=0.1
         )
 
-        raw = response.choices[0].message.content.strip()
-        if "<think>" in raw and "</think>" in raw:
-            raw = raw.split("</think>", 1)[1].strip()
-        elif "<think>" in raw:
-            # thinking block didn't close — extract JSON manually
-            import re
-            json_match = re.search(r'\{[\s\S]*\}', raw)
-            raw = json_match.group(0) if json_match else raw
-        if raw.startswith("```"):
-            raw = raw.split("```")[1]
-            if raw.startswith("json"):
-                raw = raw[4:]
-        raw = raw.strip()
-
+        raw = strip_thinking(response.choices[0].message.content)
         result = json.loads(raw)
         enriched_items = []
         for item in result.get("detected_items", []):
@@ -575,7 +576,7 @@ Respond ONLY with valid JSON, no markdown:
             "detected_items": [],
             "scan_notes": f"RAW: {raw[:500]}"
         }
-        
+
     except Exception as e:
         return JSONResponse(status_code=500, content={"status": "error", "message": str(e)})
 
@@ -607,6 +608,63 @@ async def confirm_scan(req: StockConfirmRequest):
         "message": f"{len(updated)} item(s) updated in inventory."
     }
 
+# ── Quick Add: AI Auto-Fill ──────────────────────────────────────
+@app.post("/quick-add/analyze")
+async def quick_add_analyze(image: UploadFile = File(...)):
+    """Analyze a single product photo and suggest name, category, description.
+    Price is intentionally NOT suggested — owner always enters it manually."""
+
+    image_bytes = await image.read()
+    base64_image = base64.b64encode(image_bytes).decode("utf-8")
+    mime_type = image.content_type or "image/jpeg"
+
+    vision_prompt = """You are a product listing assistant for Royal Enterprises, a ready-made furniture shop in Bangalore.
+
+Look at this photo of a single furniture item and suggest catalogue listing details.
+
+INSTRUCTIONS:
+1. Suggest a short, clear product name (e.g. "3-Door Wardrobe", "Wooden Dressing Table")
+2. Pick the best matching category from: Wardrobe, Bed, Sofa, Dining, Dressing Table, Shoe Rack, Cupboard, Chair, Table, Storage, Other
+3. Estimate size if visible (e.g. "6x4 feet", "Standard", "Unknown" if not clear)
+4. Estimate the main color/finish (e.g. "Jungle Wood", "White", "Black", "Walnut Brown")
+5. Write a warm, sales-friendly 1-2 sentence description mentioning material, color, and style if visible
+6. Do NOT include or guess any price
+
+If the photo is unclear or not furniture, set "detected" to false.
+
+Respond ONLY with valid JSON, no markdown:
+{
+  "detected": true,
+  "suggested_name": "...",
+  "suggested_category": "...",
+  "suggested_size": "...",
+  "suggested_color": "...",
+  "suggested_description": "..."
+}"""
+
+    try:
+        response = client.chat.completions.create(
+            model="qwen/qwen3.6-27b",
+            messages=[{
+                "role": "user",
+                "content": [
+                    {"type": "text", "text": vision_prompt},
+                    {"type": "image_url", "image_url": {"url": f"data:{mime_type};base64,{base64_image}"}}
+                ]
+            }],
+            max_tokens=400,
+            temperature=0.2
+        )
+
+        raw = strip_thinking(response.choices[0].message.content)
+        result = json.loads(raw)
+        return {"status": "success", **result}
+
+    except json.JSONDecodeError:
+        return {"status": "error", "message": "Could not read the photo clearly. Try again or fill in manually."}
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"status": "error", "message": str(e)})
+
 # ── QR Code ───────────────────────────────────────────────────
 @app.get("/generate-qr")
 def generate_qr(url: str = "https://shopbot-ai-1009.onrender.com"):
@@ -625,3 +683,15 @@ def generate_qr(url: str = "https://shopbot-ai-1009.onrender.com"):
     return StreamingResponse(buf, media_type="image/png", headers={
         "Content-Disposition": "inline; filename=shopbot-qr.png"
     })
+# ── PWA ───────────────────────────────────────────────────────
+@app.get("/sw.js")
+def service_worker():
+    return FileResponse("static/sw.js", media_type="application/javascript")
+
+@app.get("/manifest.json")
+def manifest():
+    return FileResponse("static/manifest.json", media_type="application/json")
+
+@app.get("/manifest-owner.json")
+def manifest_owner():
+    return FileResponse("static/manifest-owner.json", media_type="application/json")
