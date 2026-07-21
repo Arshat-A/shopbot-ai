@@ -49,6 +49,7 @@
     .dash-tab.active { color:var(--brown); border-bottom-color:var(--gold); font-weight:600; }
     .dash-tab.scanner-tab.active { color:var(--scanner-green); border-bottom-color:var(--scanner-green); }
     .dash-tab.analytics-tab.active { color:#6366F1; border-bottom-color:#6366F1; }
+    .dash-tab.quickadd-tab.active { color:#C9A84C; border-bottom-color:#C9A84C; }
     .tab-badge { background:var(--gold); color:var(--brown); font-size:10px; font-weight:700; padding:2px 7px; border-radius:100px; }
     .tab-badge-new { background:var(--scanner-green); color:#fff; font-size:9px; font-weight:700; padding:2px 7px; border-radius:100px; animation:pulse 2s infinite; }
     @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.6} }
@@ -72,6 +73,7 @@
 
     /* FORM */
     .form-group { display:flex; flex-direction:column; gap:6px; margin-bottom:12px; }
+    .form-row-2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
     .form-label { font-size:11px; font-weight:600; color:var(--text-light); text-transform:uppercase; letter-spacing:0.05em; }
     .form-input { border:1.5px solid rgba(201,168,76,0.25); border-radius:10px; padding:12px 14px; font-size:16px; font-family:'Inter',sans-serif; color:var(--text); background:var(--cream); outline:none; width:100%; }
     .form-input:focus { border-color:var(--gold); background:var(--white); }
@@ -104,6 +106,7 @@
     .badge { font-size:10px; font-weight:600; padding:2px 8px; border-radius:100px; }
     .badge-green { background:rgba(22,163,74,0.1); color:var(--success); }
     .badge-red { background:rgba(220,38,38,0.1); color:var(--danger); }
+    .badge-meta { background:rgba(107,76,59,0.08); color:var(--brown-light); }
     .product-price-row { font-size:14px; font-weight:700; color:var(--gold); margin-bottom:3px; }
     .product-desc-row { font-size:11px; color:var(--text-light); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:8px; }
     .product-actions { display:flex; gap:6px; flex-wrap:wrap; }
@@ -213,6 +216,19 @@
     .how-step-num { width:24px; height:24px; background:rgba(37,211,102,0.15); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:var(--scanner-green); margin:0 auto 8px; }
     .how-step-text { font-size:10px; color:rgba(255,255,255,0.45); line-height:1.5; }
 
+    /* QUICK ADD */
+    .qadd-capture-card { background:var(--white); border:1px solid rgba(201,168,76,0.15); border-radius:16px; padding:22px 18px; text-align:center; margin-bottom:16px; }
+    .qadd-icon-circle { width:60px; height:60px; margin:0 auto 12px; border-radius:50%; background:var(--gold-light); display:flex; align-items:center; justify-content:center; font-size:26px; }
+    .qadd-capture-title { font-family:'Playfair Display',serif; font-size:17px; font-weight:600; color:var(--brown); margin-bottom:4px; }
+    .qadd-capture-sub { font-size:12px; color:var(--text-light); margin-bottom:16px; }
+    .qadd-camera-btn { width:100%; background:var(--brown); color:var(--gold); border:none; border-radius:100px; padding:15px; font-size:15px; font-weight:600; font-family:'Inter',sans-serif; cursor:pointer; }
+    .qadd-analyzing { display:none; padding:10px 0; }
+    .qadd-spinner { width:36px; height:36px; margin:0 auto 10px; border:3px solid rgba(201,168,76,0.25); border-top-color:var(--gold); border-radius:50%; animation:spin 0.8s linear infinite; }
+    .qadd-analyzing-text { font-size:13px; font-weight:600; color:var(--brown); }
+    .qadd-analyzing-sub { font-size:11px; color:var(--text-light); margin-top:2px; }
+    .qadd-ai-note { font-size:11px; color:var(--gold); font-weight:600; margin-top:10px; display:none; }
+    .qadd-add-more-tile { width:100%; height:100%; border:2px dashed rgba(201,168,76,0.35); border-radius:8px; background:transparent; color:var(--text-light); font-size:22px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+
     /* QR */
     .qr-card-body { display:flex; align-items:center; gap:20px; flex-wrap:wrap; }
     .qr-actions { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
@@ -253,7 +269,7 @@
       <div class="login-logo">
         <div class="login-logo-icon">R</div>
         <div class="login-title">Royal Enterprises</div>
-        <div class="login-sub">Owner Dashboard</div>
+        <div class="login-sub">Owner App</div>
       </div>
       <label class="login-label">Password</label>
       <input id="login-password" class="login-input" type="password" placeholder="Enter password" onkeydown="if(event.key==='Enter') doLogin()"/>
@@ -269,7 +285,7 @@
         <div class="dash-logo-icon">R</div>
         <div>
           <div class="dash-logo-text">Royal Enterprises</div>
-          <div class="dash-logo-sub">Owner Dashboard</div>
+          <div class="dash-logo-sub">Owner App</div>
         </div>
       </div>
       <div class="dash-header-right">
@@ -279,10 +295,11 @@
     </div>
 
     <div class="dash-tabs">
-      <button class="dash-tab active" id="tab-btn-catalogue" onclick="switchTab('catalogue')">📦 Catalogue</button>
+      <button class="dash-tab quickadd-tab active" id="tab-btn-quickadd" onclick="switchTab('quickadd')">⚡ Quick Add</button>
+      <button class="dash-tab" id="tab-btn-catalogue" onclick="switchTab('catalogue')">📦 Catalogue</button>
       <button class="dash-tab" id="tab-btn-orders" onclick="switchTab('orders')">📋 Orders <span class="tab-badge" id="pending-badge" style="display:none">0</span></button>
       <button class="dash-tab analytics-tab" id="tab-btn-analytics" onclick="switchTab('analytics')">📊 Analytics</button>
-      <button class="dash-tab scanner-tab" id="tab-btn-scanner" onclick="switchTab('scanner')">🤖 Scanner <span class="tab-badge-new">NEW</span></button>
+      <button class="dash-tab scanner-tab" id="tab-btn-scanner" onclick="switchTab('scanner')">🤖 Scanner</button>
     </div>
 
     <div class="dash-content">
@@ -291,6 +308,54 @@
         <div class="stat-card"><div class="stat-icon">📦</div><div class="stat-num" id="stat-products">—</div><div class="stat-label">Products</div></div>
         <div class="stat-card"><div class="stat-icon">📋</div><div class="stat-num" id="stat-orders">—</div><div class="stat-label">Orders</div></div>
         <div class="stat-card"><div class="stat-icon">⏳</div><div class="stat-num" id="stat-pending">—</div><div class="stat-label">Pending</div></div>
+      </div>
+
+      <!-- QUICK ADD -->
+      <div class="tab-panel active" id="panel-quickadd">
+        <div class="qadd-capture-card">
+          <div id="qadd-idle">
+            <div class="qadd-icon-circle">📷</div>
+            <div class="qadd-capture-title">Snap the product</div>
+            <div class="qadd-capture-sub">First photo auto-fills name, category, size &amp; color below</div>
+            <button class="qadd-camera-btn" onclick="document.getElementById('qadd-main-capture').click()">📷 Open Camera</button>
+            <input type="file" id="qadd-main-capture" accept="image/*" capture="environment" style="display:none" onchange="qaddHandleFirstPhoto(event)"/>
+          </div>
+          <div class="qadd-analyzing" id="qadd-analyzing">
+            <div class="qadd-spinner"></div>
+            <div class="qadd-analyzing-text">Reading the photo…</div>
+            <div class="qadd-analyzing-sub">Filling in name, category, size &amp; color</div>
+          </div>
+        </div>
+
+        <div class="card" id="qadd-form-card" style="display:none;">
+          <div class="card-header"><div class="card-title">Product Details</div></div>
+          <div class="card-body">
+            <div class="form-group">
+              <label class="form-label">Photos</label>
+              <div class="photo-upload-area">
+                <div class="photo-previews" id="qadd-photo-previews"></div>
+              </div>
+            </div>
+            <div class="form-group"><label class="form-label">Product Name</label><input id="qadd-name" class="form-input" type="text" placeholder="e.g. 3-Door Wardrobe"/></div>
+            <div class="form-row-2">
+              <div class="form-group"><label class="form-label">Price (₹)</label><input id="qadd-price" class="form-input" type="number" inputmode="numeric" placeholder="e.g. 8500"/></div>
+              <div class="form-group"><label class="form-label">Category</label><input id="qadd-category" class="form-input" type="text" placeholder="e.g. Wardrobe"/></div>
+            </div>
+            <div class="form-row-2">
+              <div class="form-group"><label class="form-label">Size</label><input id="qadd-size" class="form-input" type="text" placeholder="e.g. 6x4 feet"/></div>
+              <div class="form-group"><label class="form-label">Color</label><input id="qadd-color" class="form-input" type="text" placeholder="e.g. Jungle Wood"/></div>
+            </div>
+            <div class="form-group"><label class="form-label">Description</label><input id="qadd-desc" class="form-input" type="text" placeholder="Sales-friendly description"/></div>
+            <div class="qadd-ai-note" id="qadd-ai-note">✨ AI-filled — check and edit before saving</div>
+            <div style="display:flex; gap:10px; margin-top:14px;">
+              <button class="modal-cancel" style="flex:0 0 auto; padding:15px 18px;" onclick="qaddReset()">Cancel</button>
+              <button class="submit-btn" onclick="qaddSave()">Save Product</button>
+            </div>
+            <div class="form-status" id="qadd-status"></div>
+          </div>
+        </div>
+
+        <input type="file" id="qadd-extra-capture" accept="image/*" capture="environment" style="display:none" onchange="qaddHandleExtraPhoto(event)"/>
       </div>
 
       <div class="card" style="margin-bottom:16px;">
@@ -311,13 +376,19 @@
       </div>
 
       <!-- CATALOGUE -->
-      <div class="tab-panel active" id="panel-catalogue">
+      <div class="tab-panel" id="panel-catalogue">
         <div class="card">
           <div class="card-header"><div class="card-title">➕ Add Product</div></div>
           <div class="card-body">
             <div class="form-group"><label class="form-label">Product Name</label><input id="p-name" class="form-input" type="text" placeholder="e.g. Wardrobe"/></div>
-            <div class="form-group"><label class="form-label">Price (₹)</label><input id="p-price" class="form-input" type="number" inputmode="numeric" placeholder="e.g. 10500"/></div>
-            <div class="form-group"><label class="form-label">Category</label><input id="p-category" class="form-input" type="text" placeholder="e.g. Furniture"/></div>
+            <div class="form-row-2">
+              <div class="form-group"><label class="form-label">Price (₹)</label><input id="p-price" class="form-input" type="number" inputmode="numeric" placeholder="e.g. 10500"/></div>
+              <div class="form-group"><label class="form-label">Category</label><input id="p-category" class="form-input" type="text" placeholder="e.g. Furniture"/></div>
+            </div>
+            <div class="form-row-2">
+              <div class="form-group"><label class="form-label">Size</label><input id="p-size" class="form-input" type="text" placeholder="e.g. 6x4 feet"/></div>
+              <div class="form-group"><label class="form-label">Color</label><input id="p-color" class="form-input" type="text" placeholder="e.g. Jungle Wood"/></div>
+            </div>
             <div class="form-group"><label class="form-label">Description</label><input id="p-desc" class="form-input" type="text" placeholder="Size, material, color options"/></div>
             <div class="form-group">
               <label class="form-label">Photos (up to 5)</label>
@@ -399,8 +470,14 @@
       <div class="modal-title">✏️ Edit Product</div>
       <input type="hidden" id="edit-index"/>
       <div class="form-group"><label class="form-label">Product Name</label><input id="edit-name" class="form-input" type="text"/></div>
-      <div class="form-group"><label class="form-label">Price (₹)</label><input id="edit-price" class="form-input" type="number" inputmode="numeric"/></div>
-      <div class="form-group"><label class="form-label">Category</label><input id="edit-category" class="form-input" type="text"/></div>
+      <div class="form-row-2">
+        <div class="form-group"><label class="form-label">Price (₹)</label><input id="edit-price" class="form-input" type="number" inputmode="numeric"/></div>
+        <div class="form-group"><label class="form-label">Category</label><input id="edit-category" class="form-input" type="text"/></div>
+      </div>
+      <div class="form-row-2">
+        <div class="form-group"><label class="form-label">Size</label><input id="edit-size" class="form-input" type="text"/></div>
+        <div class="form-group"><label class="form-label">Color</label><input id="edit-color" class="form-input" type="text"/></div>
+      </div>
       <div class="form-group"><label class="form-label">Description</label><input id="edit-desc" class="form-input" type="text"/></div>
       <div class="form-group">
         <label class="form-label">Add More Photos</label>
@@ -447,6 +524,98 @@
       if(pending>0){badge.style.display='inline';badge.innerText=pending}else{badge.style.display='none'}
     }
 
+    /* ── QUICK ADD ────────────────────────────────────────────── */
+    let qaddPhotos=[] // {file, url}
+
+    function qaddRenderPhotos(){
+      const strip=document.getElementById('qadd-photo-previews')
+      strip.innerHTML=qaddPhotos.map((p,i)=>`<div class="photo-preview-item"><img src="${p.url}"/>${i===0?'<div class="main-badge">MAIN</div>':''}<button class="photo-preview-delete" onclick="qaddRemovePhoto(${i})">×</button></div>`).join('')
+      strip.innerHTML += `<div class="photo-preview-item"><button type="button" class="qadd-add-more-tile" onclick="document.getElementById('qadd-extra-capture').click()">+</button></div>`
+    }
+    function qaddRemovePhoto(i){
+      URL.revokeObjectURL(qaddPhotos[i].url)
+      qaddPhotos.splice(i,1)
+      if(qaddPhotos.length===0){qaddReset();return}
+      qaddRenderPhotos()
+    }
+    async function qaddHandleFirstPhoto(event){
+      const file=event.target.files[0]; if(!file)return
+      qaddPhotos.push({file,url:URL.createObjectURL(file)})
+      document.getElementById('qadd-idle').style.display='none'
+      document.getElementById('qadd-analyzing').style.display='block'
+      try{
+        const formData=new FormData(); formData.append('image',file)
+        const res=await fetch('/quick-add/analyze',{method:'POST',body:formData})
+        const data=await res.json()
+        if(data.status==='success' && data.detected!==false){
+          document.getElementById('qadd-name').value=data.suggested_name||''
+          document.getElementById('qadd-category').value=data.suggested_category||''
+          document.getElementById('qadd-size').value=data.suggested_size||''
+          document.getElementById('qadd-color').value=data.suggested_color||''
+          document.getElementById('qadd-desc').value=data.suggested_description||''
+          document.getElementById('qadd-ai-note').style.display='block'
+        } else {
+          document.getElementById('qadd-status').innerHTML='<span style="color:var(--text-light)">Could not read photo clearly — fill in manually</span>'
+        }
+      }catch(err){
+        document.getElementById('qadd-status').innerHTML='<span style="color:var(--text-light)">Auto-fill failed — fill in manually</span>'
+      }
+      document.getElementById('qadd-analyzing').style.display='none'
+      document.getElementById('qadd-idle').style.display='block'
+      document.getElementById('qadd-form-card').style.display='block'
+      qaddRenderPhotos()
+      event.target.value=''
+    }
+    function qaddHandleExtraPhoto(event){
+      const file=event.target.files[0]; if(!file)return
+      qaddPhotos.push({file,url:URL.createObjectURL(file)})
+      qaddRenderPhotos()
+      event.target.value=''
+    }
+    function qaddReset(){
+      qaddPhotos.forEach(p=>URL.revokeObjectURL(p.url)); qaddPhotos=[]
+      document.getElementById('qadd-name').value=''
+      document.getElementById('qadd-price').value=''
+      document.getElementById('qadd-category').value=''
+      document.getElementById('qadd-size').value=''
+      document.getElementById('qadd-color').value=''
+      document.getElementById('qadd-desc').value=''
+      document.getElementById('qadd-ai-note').style.display='none'
+      document.getElementById('qadd-form-card').style.display='none'
+      document.getElementById('qadd-status').innerHTML=''
+      document.getElementById('qadd-main-capture').value=''
+    }
+    async function qaddSave(){
+      const name=document.getElementById('qadd-name').value.trim()
+      const price=document.getElementById('qadd-price').value
+      const category=document.getElementById('qadd-category').value.trim()
+      const size=document.getElementById('qadd-size').value.trim()
+      const color=document.getElementById('qadd-color').value.trim()
+      const description=document.getElementById('qadd-desc').value.trim()
+      const status=document.getElementById('qadd-status')
+      if(!name||!price||!category){status.innerHTML='<span style="color:var(--danger)">⚠️ Name, price and category are required</span>';return}
+      if(qaddPhotos.length===0){status.innerHTML='<span style="color:var(--danger)">⚠️ Add at least one photo</span>';return}
+      status.innerHTML='<span style="color:var(--text-light)">Saving…</span>'
+      const formData=new FormData()
+      formData.append('name',name); formData.append('price',parseFloat(price))
+      formData.append('category',category); formData.append('description',description)
+      formData.append('size',size); formData.append('color',color)
+      qaddPhotos.forEach(p=>formData.append('images',p.file))
+      try{
+        const res=await fetch('/catalogue',{method:'POST',body:formData})
+        const data=await res.json()
+        if(data.status==='added'){
+          status.innerHTML=`<span style="color:var(--success)">✅ ${name} added to catalogue</span>`
+          setTimeout(()=>{qaddReset(); loadStats(); loadProducts()},900)
+        } else {
+          status.innerHTML='<span style="color:var(--danger)">Could not save — try again</span>'
+        }
+      }catch(err){
+        status.innerHTML='<span style="color:var(--danger)">Network error — try again</span>'
+      }
+    }
+
+    /* ── CATALOGUE (manual add) ───────────────────────────────── */
     let newPhotoFiles=[]
     function previewNewPhotos(event) {
       const files=Array.from(event.target.files).slice(0,5); newPhotoFiles=files
@@ -463,12 +632,15 @@
       const name=document.getElementById('p-name').value.trim()
       const price=document.getElementById('p-price').value.trim()
       const category=document.getElementById('p-category').value.trim()
+      const size=document.getElementById('p-size').value.trim()
+      const color=document.getElementById('p-color').value.trim()
       const description=document.getElementById('p-desc').value.trim()
       const status=document.getElementById('add-status')
       if(!name||!price||!category||!description){status.innerHTML='<span style="color:var(--danger)">⚠️ Please fill all fields</span>';return}
       const formData=new FormData()
       formData.append('name',name); formData.append('price',parseFloat(price))
       formData.append('category',category); formData.append('description',description)
+      formData.append('size',size); formData.append('color',color)
       newPhotoFiles.forEach(f=>formData.append('images',f))
       const res=await fetch('/catalogue',{method:'POST',body:formData})
       const data=await res.json()
@@ -476,6 +648,7 @@
         status.innerHTML='<span style="color:var(--success)">✅ Product added!</span>'
         document.getElementById('p-name').value=''; document.getElementById('p-price').value=''
         document.getElementById('p-category').value=''; document.getElementById('p-desc').value=''
+        document.getElementById('p-size').value=''; document.getElementById('p-color').value=''
         document.getElementById('p-images').value=''; document.getElementById('new-photo-previews').innerHTML=''
         newPhotoFiles=[]; loadProducts(); loadStats()
         setTimeout(()=>status.innerHTML='',3000)
@@ -489,10 +662,11 @@
       if(products.length===0){list.innerHTML=`<div class="empty-state"><div class="empty-icon">📦</div><div class="empty-title">No products yet</div><div class="empty-sub">Add your first product above</div></div>`;return}
       list.innerHTML=products.map((p,i)=>{
         const images=p.images&&p.images.length>0?p.images:(p.image?[p.image]:[])
+        const metaBadges=[p.size?`<span class="badge badge-meta">📐 ${p.size}</span>`:'',p.color?`<span class="badge badge-meta">🎨 ${p.color}</span>`:''].join('')
         return `<div class="product-item ${p.out_of_stock?'oos':''}">
           <div class="product-img-wrap">${images.length>0?`<div class="product-thumb-carousel"><img src="${images[0]}" alt="${p.name}"/>${images.length>1?`<div class="img-count-badge">+${images.length-1}</div>`:''}</div>`:'<div class="product-thumb-placeholder">🪑</div>'}</div>
           <div class="product-info">
-            <div class="product-name-row"><span class="product-name">${p.name}</span><span class="badge ${p.out_of_stock?'badge-red':'badge-green'}">${p.out_of_stock?'Out of Stock':'In Stock'}</span>${p.last_scanned_at?`<span class="badge" style="background:rgba(37,211,102,0.1);color:#25D366;font-size:9px;">🤖 Scanned</span>`:''}</div>
+            <div class="product-name-row"><span class="product-name">${p.name}</span><span class="badge ${p.out_of_stock?'badge-red':'badge-green'}">${p.out_of_stock?'Out of Stock':'In Stock'}</span>${metaBadges}${p.last_scanned_at?`<span class="badge" style="background:rgba(37,211,102,0.1);color:#25D366;font-size:9px;">🤖 Scanned</span>`:''}</div>
             <div class="product-price-row">₹${p.price.toLocaleString('en-IN')}</div>
             <div class="product-desc-row">${p.description}</div>
             <div class="product-actions">
@@ -527,6 +701,8 @@
         document.getElementById('edit-name').value=p.name
         document.getElementById('edit-price').value=p.price
         document.getElementById('edit-category').value=p.category
+        document.getElementById('edit-size').value=p.size||''
+        document.getElementById('edit-color').value=p.color||''
         document.getElementById('edit-desc').value=p.description
         document.getElementById('edit-images').value=''
         document.getElementById('edit-photo-previews').innerHTML=''
@@ -542,6 +718,8 @@
       formData.append('price',parseFloat(document.getElementById('edit-price').value))
       formData.append('category',document.getElementById('edit-category').value)
       formData.append('description',document.getElementById('edit-desc').value)
+      formData.append('size',document.getElementById('edit-size').value)
+      formData.append('color',document.getElementById('edit-color').value)
       if(editPhotoFiles.length>0){
         const addForm=new FormData()
         editPhotoFiles.forEach(f=>addForm.append('images',f))
