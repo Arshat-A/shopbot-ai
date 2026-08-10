@@ -50,6 +50,7 @@
     .dash-tab.scanner-tab.active { color:var(--scanner-green); border-bottom-color:var(--scanner-green); }
     .dash-tab.analytics-tab.active { color:#6366F1; border-bottom-color:#6366F1; }
     .dash-tab.quickadd-tab.active { color:#C9A84C; border-bottom-color:#C9A84C; }
+    .dash-tab.offers-tab.active { color:#DC6E3F; border-bottom-color:#DC6E3F; }
     .tab-badge { background:var(--gold); color:var(--brown); font-size:10px; font-weight:700; padding:2px 7px; border-radius:100px; }
     .tab-badge-new { background:var(--scanner-green); color:#fff; font-size:9px; font-weight:700; padding:2px 7px; border-radius:100px; animation:pulse 2s infinite; }
     @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.6} }
@@ -126,6 +127,17 @@
     .order-price { font-size:14px; font-weight:700; color:var(--gold); margin-top:2px; }
     .order-meta { display:flex; flex-wrap:wrap; gap:8px; font-size:12px; color:var(--text-light); margin-bottom:12px; }
     .deliver-btn { width:100%; background:var(--brown); color:var(--gold); border:none; border-radius:10px; padding:11px; font-size:13px; font-weight:600; font-family:'Inter',sans-serif; cursor:pointer; }
+    .order-actions { display:flex; gap:8px; }
+    .order-actions .deliver-btn { flex:1; }
+    .call-btn { flex:0 0 auto; background:rgba(22,163,74,0.08); color:var(--success); border:1.5px solid rgba(22,163,74,0.3); border-radius:10px; padding:11px 18px; font-size:13px; font-weight:600; font-family:'Inter',sans-serif; cursor:pointer; text-decoration:none; display:flex; align-items:center; justify-content:center; gap:6px; white-space:nowrap; }
+
+    /* CALLBACKS */
+    .callback-item { border:1px solid rgba(220,110,63,0.2); background:rgba(220,110,63,0.03); border-radius:14px; padding:16px; }
+    .callback-item.done { opacity:0.55; background:var(--gray); border-color:rgba(201,168,76,0.12); }
+    .callback-time { display:inline-flex; align-items:center; gap:5px; background:rgba(220,110,63,0.12); color:#DC6E3F; font-size:12px; font-weight:700; padding:4px 10px; border-radius:100px; margin-bottom:8px; }
+    .callback-meta { font-size:12px; color:var(--text-light); margin-bottom:12px; }
+    .callback-actions { display:flex; gap:8px; }
+    .done-btn { flex:1; background:var(--brown); color:var(--gold); border:none; border-radius:10px; padding:11px; font-size:13px; font-weight:600; font-family:'Inter',sans-serif; cursor:pointer; }
 
     /* ANALYTICS */
     .analytics-grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px; }
@@ -246,6 +258,39 @@
     .modal-save { flex:1; padding:13px; border-radius:12px; border:none; background:var(--brown); color:var(--gold); font-size:14px; font-weight:600; font-family:'Inter',sans-serif; cursor:pointer; }
 
     .empty-state { text-align:center; padding:40px 20px; color:var(--text-light); }
+
+    /* OFFERS */
+    .offer-item { border:1px solid rgba(220,110,63,0.2); border-radius:14px; padding:14px; display:flex; gap:12px; align-items:center; background:var(--white); margin-bottom:12px; }
+    .offer-item.inactive { opacity:0.55; background:var(--gray); }
+    .offer-thumb { width:64px; height:64px; border-radius:10px; object-fit:cover; flex-shrink:0; background:var(--gray); }
+    .offer-info { flex:1; min-width:0; }
+    .offer-name { font-family:'Playfair Display',serif; font-size:14px; font-weight:600; color:var(--brown); margin-bottom:4px; }
+    .offer-pricing { display:flex; align-items:baseline; gap:8px; }
+    .offer-original { font-size:12px; color:var(--text-light); text-decoration:line-through; }
+    .offer-final { font-size:15px; font-weight:700; color:#DC6E3F; }
+    .offer-badge { background:rgba(220,110,63,0.12); color:#DC6E3F; font-size:10px; font-weight:700; padding:2px 8px; border-radius:100px; margin-left:4px; }
+    .offer-actions { display:flex; flex-direction:column; gap:6px; }
+    .offer-preview-box { background:var(--cream); border:1.5px dashed rgba(220,110,63,0.35); border-radius:10px; padding:12px; text-align:center; }
+
+    /* PERFORMANCE TABLE */
+    .perf-row { display:flex; align-items:center; gap:10px; padding:9px 0; border-bottom:1px solid rgba(201,168,76,0.08); }
+    .perf-row:last-child { border-bottom:none; }
+    .perf-name { flex:1; font-size:12.5px; color:var(--brown); font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .perf-stat { font-size:11px; color:var(--text-light); text-align:center; width:64px; flex-shrink:0; }
+    .perf-stat b { display:block; font-size:14px; color:var(--brown); font-family:'Playfair Display',serif; }
+
+    /* P&L */
+    .pnl-summary { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:16px; }
+    .pnl-stat { background:var(--cream); border-radius:10px; padding:12px 8px; text-align:center; }
+    .pnl-stat-val { font-family:'Playfair Display',serif; font-size:17px; font-weight:700; color:var(--brown); }
+    .pnl-stat-val.profit { color:var(--success); }
+    .pnl-stat-label { font-size:9.5px; color:var(--text-light); margin-top:2px; }
+    .pnl-table-row { display:flex; align-items:center; gap:6px; padding:8px 0; border-bottom:1px solid rgba(201,168,76,0.08); font-size:11.5px; }
+    .pnl-table-row:last-child { border-bottom:none; }
+    .pnl-table-row .pname { flex:1.3; color:var(--brown); font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .pnl-table-row .pstat { flex:1; text-align:right; color:var(--text-light); }
+    .pnl-table-row .pstat.profit-pos { color:var(--success); font-weight:600; }
+    .pnl-table-row .pstat.profit-neg { color:var(--danger); font-weight:600; }
     .empty-icon { font-size:44px; margin-bottom:10px; }
     .empty-title { font-family:'Playfair Display',serif; font-size:16px; color:var(--brown); margin-bottom:5px; }
     .empty-sub { font-size:12px; }
@@ -297,7 +342,8 @@
     <div class="dash-tabs">
       <button class="dash-tab quickadd-tab active" id="tab-btn-quickadd" onclick="switchTab('quickadd')">⚡ Quick Add</button>
       <button class="dash-tab" id="tab-btn-catalogue" onclick="switchTab('catalogue')">📦 Catalogue</button>
-      <button class="dash-tab" id="tab-btn-orders" onclick="switchTab('orders')">📋 Orders <span class="tab-badge" id="pending-badge" style="display:none">0</span></button>
+      <button class="dash-tab" id="tab-btn-orders" onclick="switchTab('orders')">📋 Orders <span class="tab-badge" id="pending-badge" style="display:none">0</span><span class="tab-badge" id="callback-badge" style="display:none;background:#DC6E3F;">0</span></button>
+      <button class="dash-tab offers-tab" id="tab-btn-offers" onclick="switchTab('offers')">🏷️ Offers</button>
       <button class="dash-tab analytics-tab" id="tab-btn-analytics" onclick="switchTab('analytics')">📊 Analytics</button>
       <button class="dash-tab scanner-tab" id="tab-btn-scanner" onclick="switchTab('scanner')">🤖 Scanner</button>
     </div>
@@ -345,6 +391,10 @@
               <div class="form-group"><label class="form-label">Size</label><input id="qadd-size" class="form-input" type="text" placeholder="e.g. 6x4 feet"/></div>
               <div class="form-group"><label class="form-label">Color</label><input id="qadd-color" class="form-input" type="text" placeholder="e.g. Jungle Wood"/></div>
             </div>
+            <div class="form-row-2">
+              <div class="form-group"><label class="form-label">Cost Price (₹) — private</label><input id="qadd-cost" class="form-input" type="number" inputmode="numeric" placeholder="e.g. 7000"/></div>
+              <div class="form-group"><label class="form-label">Stock on Hand</label><input id="qadd-stock" class="form-input" type="number" inputmode="numeric" placeholder="e.g. 12"/></div>
+            </div>
             <div class="form-group"><label class="form-label">Description</label><input id="qadd-desc" class="form-input" type="text" placeholder="Sales-friendly description"/></div>
             <div class="qadd-ai-note" id="qadd-ai-note">✨ AI-filled — check and edit before saving</div>
             <div style="display:flex; gap:10px; margin-top:14px;">
@@ -389,6 +439,16 @@
               <div class="form-group"><label class="form-label">Size</label><input id="p-size" class="form-input" type="text" placeholder="e.g. 6x4 feet"/></div>
               <div class="form-group"><label class="form-label">Color</label><input id="p-color" class="form-input" type="text" placeholder="e.g. Jungle Wood"/></div>
             </div>
+            <div class="form-row-2">
+              <div class="form-group">
+                <label class="form-label">Cost Price (₹) — private</label>
+                <input id="p-cost" class="form-input" type="number" inputmode="numeric" placeholder="e.g. 7000"/>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Stock on Hand</label>
+                <input id="p-stock" class="form-input" type="number" inputmode="numeric" placeholder="e.g. 12 units"/>
+              </div>
+            </div>
             <div class="form-group"><label class="form-label">Description</label><input id="p-desc" class="form-input" type="text" placeholder="Size, material, color options"/></div>
             <div class="form-group">
               <label class="form-label">Photos (up to 5)</label>
@@ -412,8 +472,36 @@
       <!-- ORDERS -->
       <div class="tab-panel" id="panel-orders">
         <div class="card">
+          <div class="card-header"><div class="card-title">📞 Scheduled Callbacks</div><div style="font-size:12px;color:var(--text-light);" id="callbacks-count"></div></div>
+          <div class="card-body"><div class="orders-list" id="callbacks-list"><div class="empty-state"><div class="empty-icon">📞</div><div class="empty-title">Loading...</div></div></div></div>
+        </div>
+        <div class="card">
           <div class="card-header"><div class="card-title">All Orders</div><div style="font-size:12px;color:var(--text-light);" id="orders-count"></div></div>
           <div class="card-body"><div class="orders-list" id="orders-list"><div class="empty-state"><div class="empty-icon">📋</div><div class="empty-title">Loading...</div></div></div></div>
+        </div>
+      </div>
+
+      <!-- OFFERS -->
+      <div class="tab-panel" id="panel-offers">
+        <div class="card">
+          <div class="card-header"><div class="card-title">🏷️ Create an Offer</div></div>
+          <div class="card-body">
+            <div class="form-group">
+              <label class="form-label">Product</label>
+              <select id="offer-product" class="form-input"></select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Offer Price (₹)</label>
+              <input id="offer-price" class="form-input" type="number" inputmode="numeric" placeholder="e.g. 8999"/>
+            </div>
+            <div id="offer-preview" style="display:none; margin-bottom:14px;"></div>
+            <button class="submit-btn" onclick="createOffer()">🏷️ Start Offer</button>
+            <div class="form-status" id="offer-status"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Active &amp; Past Offers</div><div style="font-size:12px;color:var(--text-light);" id="offers-count"></div></div>
+          <div class="card-body"><div class="product-list" id="offers-list"><div class="empty-state"><div class="empty-icon">🏷️</div><div class="empty-title">Loading...</div></div></div></div>
         </div>
       </div>
 
@@ -425,7 +513,17 @@
           <div class="analytics-card"><div class="analytics-card-title">Delivered</div><div class="analytics-card-value" id="an-delivered">0</div><div class="analytics-card-sub">orders</div></div>
           <div class="analytics-card"><div class="analytics-card-title">Avg Order</div><div class="analytics-card-value" id="an-avg">₹0</div><div class="analytics-card-sub">per order</div></div>
         </div>
-        <div class="card"><div class="card-header"><div class="card-title">🏆 Top Products</div></div><div class="card-body"><div class="bar-chart" id="an-top-products"><div style="color:var(--text-light);font-size:13px;">No orders yet</div></div></div></div>
+        <div class="card"><div class="card-header"><div class="card-title">🏆 Top Selling Products</div></div><div class="card-body"><div class="bar-chart" id="an-top-products"><div style="color:var(--text-light);font-size:13px;">No orders yet</div></div></div></div>
+        <div class="card"><div class="card-header"><div class="card-title">💬 Most Asked-About Products</div><div style="font-size:11px;color:var(--text-light);">from customer chats</div></div><div class="card-body"><div class="bar-chart" id="an-most-asked"><div style="color:var(--text-light);font-size:13px;">No chat activity yet</div></div></div></div>
+        <div class="card"><div class="card-header"><div class="card-title">🔍 Enquired vs Sold</div></div><div class="card-body"><div id="an-performance"><div style="color:var(--text-light);font-size:13px;">No data yet</div></div></div></div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">💰 Profit &amp; Loss</div></div>
+          <div class="card-body">
+            <p style="font-size:11.5px; color:var(--text-light); margin-bottom:12px; line-height:1.5;">Uses the cost price at the time each item sold — not today's cost — so editing a product's cost later never rewrites past profit. Also shows what your current stock is worth. Set cost price and stock quantity when adding or editing a product.</p>
+            <button class="submit-btn" onclick="loadPnL()" id="pnl-btn">📊 Calculate P&amp;L</button>
+            <div id="pnl-results" style="display:none; margin-top:16px;"></div>
+          </div>
+        </div>
         <div class="card"><div class="card-header"><div class="card-title">📊 Order Status</div></div><div class="card-body"><div class="donut-wrap"><svg width="90" height="90" viewBox="0 0 100 100"><circle cx="50" cy="50" r="38" fill="none" stroke="#F5F0EA" stroke-width="14"/><circle id="donut-delivered" cx="50" cy="50" r="38" fill="none" stroke="#16a34a" stroke-width="14" stroke-dasharray="0 239" stroke-dashoffset="60" stroke-linecap="round" style="transition:stroke-dasharray 0.8s ease;transform-origin:center;transform:rotate(-90deg);"/><circle id="donut-pending" cx="50" cy="50" r="38" fill="none" stroke="#C9A84C" stroke-width="14" stroke-dasharray="0 239" stroke-dashoffset="60" stroke-linecap="round" style="transition:stroke-dasharray 0.8s ease;transform-origin:center;transform:rotate(-90deg);"/></svg><div class="donut-legend"><div class="donut-legend-item"><div class="donut-legend-dot" style="background:#16a34a;"></div><span id="an-delivered-label">0 Delivered</span></div><div class="donut-legend-item"><div class="donut-legend-dot" style="background:#C9A84C;"></div><span id="an-pending-label">0 Pending</span></div></div></div></div></div>
         <div class="card"><div class="card-header"><div class="card-title">🕐 Peak Hours</div></div><div class="card-body"><div class="hour-chart" id="an-hours"></div><div style="display:flex;justify-content:space-between;margin-top:4px;"><span style="font-size:9px;color:var(--text-light);">12AM</span><span style="font-size:9px;color:var(--text-light);">6AM</span><span style="font-size:9px;color:var(--text-light);">12PM</span><span style="font-size:9px;color:var(--text-light);">6PM</span><span style="font-size:9px;color:var(--text-light);">11PM</span></div></div></div>
         <div class="card"><div class="card-header"><div class="card-title">⚡ Recent Activity</div></div><div class="card-body"><div class="activity-feed" id="an-activity"><div style="color:var(--text-light);font-size:13px;">No orders yet</div></div></div></div>
@@ -478,6 +576,10 @@
         <div class="form-group"><label class="form-label">Size</label><input id="edit-size" class="form-input" type="text"/></div>
         <div class="form-group"><label class="form-label">Color</label><input id="edit-color" class="form-input" type="text"/></div>
       </div>
+      <div class="form-row-2">
+        <div class="form-group"><label class="form-label">Cost Price (₹) — private</label><input id="edit-cost" class="form-input" type="number" inputmode="numeric"/></div>
+        <div class="form-group"><label class="form-label">Stock on Hand</label><input id="edit-stock" class="form-input" type="number" inputmode="numeric"/></div>
+      </div>
       <div class="form-group"><label class="form-label">Description</label><input id="edit-desc" class="form-input" type="text"/></div>
       <div class="form-group">
         <label class="form-label">Add More Photos</label>
@@ -498,7 +600,7 @@
     async function doLogin() {
       const password = document.getElementById('login-password').value
       const res = await fetch('/auth/login', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({password}) })
-      if (res.ok) { document.getElementById('login-page').style.display='none'; document.getElementById('dashboard').style.display='block'; loadStats(); loadProducts() }
+      if (res.ok) { document.getElementById('login-page').style.display='none'; document.getElementById('dashboard').style.display='block'; loadStats(); loadProducts(); loadCallbacks() }
       else { document.getElementById('login-error').style.display='block' }
     }
     function doLogout() { document.getElementById('dashboard').style.display='none'; document.getElementById('login-page').style.display='flex'; document.getElementById('login-password').value=''; document.getElementById('login-error').style.display='none' }
@@ -508,9 +610,10 @@
       document.querySelectorAll('.dash-tab').forEach(b=>b.classList.remove('active'))
       document.getElementById('panel-'+tab).classList.add('active')
       document.getElementById('tab-btn-'+tab).classList.add('active')
-      if(tab==='orders') loadOrders()
+      if(tab==='orders') { loadOrders(); loadCallbacks() }
       if(tab==='catalogue') loadProducts()
-      if(tab==='analytics') loadAnalytics()
+      if(tab==='analytics') { loadAnalytics(); loadMostAsked(); loadPerformance() }
+      if(tab==='offers') { loadOfferProductOptions(); loadOffers() }
     }
 
     async function loadStats() {
@@ -579,6 +682,8 @@
       document.getElementById('qadd-category').value=''
       document.getElementById('qadd-size').value=''
       document.getElementById('qadd-color').value=''
+      document.getElementById('qadd-cost').value=''
+      document.getElementById('qadd-stock').value=''
       document.getElementById('qadd-desc').value=''
       document.getElementById('qadd-ai-note').style.display='none'
       document.getElementById('qadd-form-card').style.display='none'
@@ -591,6 +696,8 @@
       const category=document.getElementById('qadd-category').value.trim()
       const size=document.getElementById('qadd-size').value.trim()
       const color=document.getElementById('qadd-color').value.trim()
+      const costPrice=document.getElementById('qadd-cost').value.trim()
+      const stockQty=document.getElementById('qadd-stock').value.trim()
       const description=document.getElementById('qadd-desc').value.trim()
       const status=document.getElementById('qadd-status')
       if(!name||!price||!category){status.innerHTML='<span style="color:var(--danger)">⚠️ Name, price and category are required</span>';return}
@@ -600,6 +707,8 @@
       formData.append('name',name); formData.append('price',parseFloat(price))
       formData.append('category',category); formData.append('description',description)
       formData.append('size',size); formData.append('color',color)
+      formData.append('cost_price',costPrice?parseFloat(costPrice):0)
+      formData.append('stock_qty',stockQty?parseInt(stockQty):0)
       qaddPhotos.forEach(p=>formData.append('images',p.file))
       try{
         const res=await fetch('/catalogue',{method:'POST',body:formData})
@@ -634,6 +743,8 @@
       const category=document.getElementById('p-category').value.trim()
       const size=document.getElementById('p-size').value.trim()
       const color=document.getElementById('p-color').value.trim()
+      const costPrice=document.getElementById('p-cost').value.trim()
+      const stockQty=document.getElementById('p-stock').value.trim()
       const description=document.getElementById('p-desc').value.trim()
       const status=document.getElementById('add-status')
       if(!name||!price||!category||!description){status.innerHTML='<span style="color:var(--danger)">⚠️ Please fill all fields</span>';return}
@@ -641,6 +752,8 @@
       formData.append('name',name); formData.append('price',parseFloat(price))
       formData.append('category',category); formData.append('description',description)
       formData.append('size',size); formData.append('color',color)
+      formData.append('cost_price',costPrice?parseFloat(costPrice):0)
+      formData.append('stock_qty',stockQty?parseInt(stockQty):0)
       newPhotoFiles.forEach(f=>formData.append('images',f))
       const res=await fetch('/catalogue',{method:'POST',body:formData})
       const data=await res.json()
@@ -649,6 +762,7 @@
         document.getElementById('p-name').value=''; document.getElementById('p-price').value=''
         document.getElementById('p-category').value=''; document.getElementById('p-desc').value=''
         document.getElementById('p-size').value=''; document.getElementById('p-color').value=''
+        document.getElementById('p-cost').value=''; document.getElementById('p-stock').value=''
         document.getElementById('p-images').value=''; document.getElementById('new-photo-previews').innerHTML=''
         newPhotoFiles=[]; loadProducts(); loadStats()
         setTimeout(()=>status.innerHTML='',3000)
@@ -703,6 +817,8 @@
         document.getElementById('edit-category').value=p.category
         document.getElementById('edit-size').value=p.size||''
         document.getElementById('edit-color').value=p.color||''
+        document.getElementById('edit-cost').value=p.cost_price||''
+        document.getElementById('edit-stock').value=p.stock_qty||''
         document.getElementById('edit-desc').value=p.description
         document.getElementById('edit-images').value=''
         document.getElementById('edit-photo-previews').innerHTML=''
@@ -720,6 +836,10 @@
       formData.append('description',document.getElementById('edit-desc').value)
       formData.append('size',document.getElementById('edit-size').value)
       formData.append('color',document.getElementById('edit-color').value)
+      const editCost=document.getElementById('edit-cost').value
+      formData.append('cost_price',editCost?parseFloat(editCost):0)
+      const editStock=document.getElementById('edit-stock').value
+      formData.append('stock_qty',editStock?parseInt(editStock):0)
       if(editPhotoFiles.length>0){
         const addForm=new FormData()
         editPhotoFiles.forEach(f=>addForm.append('images',f))
@@ -742,10 +862,35 @@
             <span class="badge ${o.status==='delivered'?'badge-green':''}" style="${o.status!=='delivered'?'background:rgba(201,168,76,0.1);color:var(--gold);':''}">${o.status==='delivered'?'✅ Delivered':'⏳ Pending'}</span>
           </div>
           <div class="order-meta"><span>👤 ${o.customer_name}</span><span>📞 ${o.customer_phone}</span><span>🕐 ${o.timestamp}</span></div>
-          ${o.status!=='delivered'?`<button class="deliver-btn" onclick="markDelivered('${o.id}')">✅ Mark as Delivered</button>`:''}
+          <div class="order-actions">
+            ${o.customer_phone && o.customer_phone!=='Not provided'?`<a href="tel:${o.customer_phone}" class="call-btn">📞 Call</a>`:''}
+            ${o.status!=='delivered'?`<button class="deliver-btn" onclick="markDelivered('${o.id}')">✅ Mark as Delivered</button>`:''}
+          </div>
         </div>`).join('')
     }
     async function markDelivered(orderId){await fetch(`/orders/${orderId}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({status:'delivered'})});loadOrders();loadStats()}
+
+    /* ── Scheduled Callbacks ───────────────────────────────────── */
+    async function loadCallbacks(){
+      const res=await fetch('/callbacks'); const callbacks=await res.json()
+      const list=document.getElementById('callbacks-list')
+      const pending=callbacks.filter(c=>c.status==='pending').length
+      document.getElementById('callbacks-count').innerText=`${callbacks.length} total · ${pending} pending`
+      const badge=document.getElementById('callback-badge')
+      if(badge){ if(pending>0){badge.style.display='inline';badge.innerText=pending} else {badge.style.display='none'} }
+      if(callbacks.length===0){list.innerHTML=`<div class="empty-state"><div class="empty-icon">📞</div><div class="empty-title">No callback requests</div><div class="empty-sub">When a customer asks ShopBot for a call back, it shows up here</div></div>`;return}
+      list.innerHTML=[...callbacks].reverse().map(c=>`
+        <div class="callback-item ${c.status==='done'?'done':''}">
+          <div class="callback-time">🕐 ${c.requested_time || 'ASAP'}</div>
+          <div style="font-family:'Playfair Display',serif;font-size:14px;font-weight:600;color:var(--brown);margin-bottom:4px;">${c.product ? 'Re: '+c.product : 'General enquiry'}</div>
+          <div class="callback-meta">👤 ${c.customer_name} · 📞 ${c.customer_phone} · requested ${c.timestamp}</div>
+          <div class="callback-actions">
+            ${c.customer_phone && c.customer_phone!=='Not provided'?`<a href="tel:${c.customer_phone}" class="call-btn">📞 Call</a>`:''}
+            ${c.status!=='done'?`<button class="done-btn" onclick="markCallbackDone('${c.id}')">✅ Mark Done</button>`:''}
+          </div>
+        </div>`).join('')
+    }
+    async function markCallbackDone(callbackId){await fetch(`/callbacks/${callbackId}/complete`,{method:'PATCH'});loadCallbacks()}
 
     async function loadAnalytics(){
       const res=await fetch('/orders'); const orders=await res.json()
@@ -780,6 +925,120 @@
       const recent=[...orders].reverse().slice(0,8)
       document.getElementById('an-activity').innerHTML=recent.length===0?'<div style="color:var(--text-light);font-size:13px;">No orders yet</div>':recent.map(o=>`<div class="activity-item"><div class="activity-dot ${o.status}"></div><div class="activity-text"><div class="activity-name">${o.product}</div><div class="activity-sub">👤 ${o.customer_name} · 📞 ${o.customer_phone}</div></div><div class="activity-time">${o.timestamp||''}</div></div>`).join('')
     }
+
+    /* ── Most asked-about products (from chat) ────────────────── */
+    async function loadMostAsked(){
+      const res=await fetch('/analytics/most-asked'); const data=await res.json()
+      const el=document.getElementById('an-most-asked')
+      if(!data.length){el.innerHTML='<div style="color:var(--text-light);font-size:13px;">No chat activity yet</div>';return}
+      const max=data[0].count||1
+      el.innerHTML=data.map(d=>`<div class="bar-row"><div class="bar-label" title="${d.product}">${d.product}</div><div class="bar-track"><div class="bar-fill" style="width:${(d.count/max)*100}%"></div></div><div class="bar-count">${d.count}</div></div>`).join('')
+    }
+
+    /* ── Enquired vs Sold performance table ───────────────────── */
+    async function loadPerformance(){
+      const res=await fetch('/analytics/product-performance'); const data=await res.json()
+      const el=document.getElementById('an-performance')
+      if(!data.length){el.innerHTML='<div style="color:var(--text-light);font-size:13px;">No data yet</div>';return}
+      el.innerHTML=`<div class="perf-row" style="border-bottom:1.5px solid rgba(201,168,76,0.2);"><div class="perf-name" style="font-weight:700;font-size:11px;text-transform:uppercase;color:var(--text-light);">Product</div><div class="perf-stat" style="font-weight:700;font-size:9.5px;text-transform:uppercase;">Enquired</div><div class="perf-stat" style="font-weight:700;font-size:9.5px;text-transform:uppercase;">Sold</div><div class="perf-stat" style="font-weight:700;font-size:9.5px;text-transform:uppercase;">Conv.</div></div>` +
+        data.map(d=>`<div class="perf-row"><div class="perf-name" title="${d.product}">${d.product}</div><div class="perf-stat"><b>${d.enquiries}</b></div><div class="perf-stat"><b>${d.orders}</b></div><div class="perf-stat"><b>${d.conversion_pct}%</b></div></div>`).join('')
+    }
+
+    /* ── Profit & Loss ─────────────────────────────────────────── */
+    async function loadPnL(){
+      const btn=document.getElementById('pnl-btn')
+      btn.innerText='⏳ Calculating...'; btn.disabled=true
+      const res=await fetch('/analytics/pnl'); const data=await res.json()
+      btn.innerText='📊 Calculate P&L'; btn.disabled=false
+      const el=document.getElementById('pnl-results')
+      el.style.display='block'
+
+      let html=`<div class="pnl-summary">
+        <div class="pnl-stat"><div class="pnl-stat-val">₹${data.total_revenue.toLocaleString('en-IN')}</div><div class="pnl-stat-label">Revenue</div></div>
+        <div class="pnl-stat"><div class="pnl-stat-val">₹${data.total_cogs.toLocaleString('en-IN')}</div><div class="pnl-stat-label">Cost of Goods Sold</div></div>
+        <div class="pnl-stat"><div class="pnl-stat-val profit">₹${data.gross_profit.toLocaleString('en-IN')}</div><div class="pnl-stat-label">Gross Profit · ${data.gross_margin_pct}%</div></div>
+      </div>`
+
+      html+=`<div class="pnl-summary" style="margin-bottom:14px;">
+        <div class="pnl-stat" style="grid-column:span 1;background:rgba(201,168,76,0.1);"><div class="pnl-stat-val">₹${data.total_inventory_value.toLocaleString('en-IN')}</div><div class="pnl-stat-label">Current Inventory Value</div></div>
+        <div class="pnl-stat" style="grid-column:span 2;background:rgba(201,168,76,0.1);display:flex;flex-direction:column;justify-content:center;"><div class="pnl-stat-val">${data.total_units_in_stock}</div><div class="pnl-stat-label">Units on hand across all products (set via Catalogue or the Scanner)</div></div>
+      </div>`
+
+      if(data.estimated_cost_orders>0){
+        html+=`<p style="font-size:10.5px;color:var(--text-light);background:var(--cream);padding:8px 10px;border-radius:8px;margin-bottom:12px;">ℹ️ ${data.estimated_cost_orders} older order${data.estimated_cost_orders>1?'s':''} didn't have a saved cost snapshot, so today's cost price was used as an estimate for those.</p>`
+      }
+
+      if(data.breakdown.length===0){
+        html+='<div style="color:var(--text-light);font-size:13px;">No orders yet to calculate from.</div>'
+      } else {
+        html+=`<div class="pnl-table-row" style="border-bottom:1.5px solid rgba(201,168,76,0.2);font-weight:700;font-size:10px;text-transform:uppercase;color:var(--text-light);"><div class="pname">Product</div><div class="pstat">Sold</div><div class="pstat">Profit</div><div class="pstat">Stock</div></div>`
+        html+=data.breakdown.map(b=>`<div class="pnl-table-row"><div class="pname" title="${b.product}">${b.product}</div><div class="pstat">${b.units_sold}</div><div class="pstat ${b.profit>=0?'profit-pos':'profit-neg'}">₹${b.profit.toLocaleString('en-IN')}</div><div class="pstat">${b.stock_on_hand}</div></div>`).join('')
+        html+=`<p style="font-size:10px;color:var(--text-light);margin-top:10px;">Products with ₹0 cost price haven't had a cost entered yet — edit them in Catalogue to get an accurate margin.</p>`
+      }
+      el.innerHTML=html
+    }
+
+    /* ── Offers management ────────────────────────────────────── */
+    async function loadOfferProductOptions(){
+      const res=await fetch('/catalogue'); const products=await res.json()
+      const sel=document.getElementById('offer-product')
+      sel.innerHTML=products.map(p=>`<option value="${p.name}" data-price="${p.price}">${p.name} — ₹${p.price.toLocaleString('en-IN')}</option>`).join('')
+      updateOfferPreview()
+      sel.onchange=updateOfferPreview
+      document.getElementById('offer-price').oninput=updateOfferPreview
+    }
+    function updateOfferPreview(){
+      const sel=document.getElementById('offer-product')
+      const opt=sel.options[sel.selectedIndex]
+      const original=opt?parseFloat(opt.dataset.price):0
+      const offerPrice=parseFloat(document.getElementById('offer-price').value)
+      const box=document.getElementById('offer-preview')
+      if(!original||!offerPrice||offerPrice<=0||offerPrice>=original){box.style.display='none';return}
+      const pct=Math.round((1-offerPrice/original)*100)
+      box.style.display='block'
+      box.innerHTML=`<div class="offer-preview-box"><span class="offer-original">₹${original.toLocaleString('en-IN')}</span> <span class="offer-final">₹${offerPrice.toLocaleString('en-IN')}</span> <span class="offer-badge">${pct}% OFF</span><div style="font-size:10px;color:var(--text-light);margin-top:4px;">This is how it'll look to customers</div></div>`
+    }
+    async function createOffer(){
+      const sel=document.getElementById('offer-product')
+      const productName=sel.value
+      const offerPrice=parseFloat(document.getElementById('offer-price').value)
+      const status=document.getElementById('offer-status')
+      if(!productName||!offerPrice){status.innerHTML='<span style="color:var(--danger)">⚠️ Pick a product and enter an offer price</span>';return}
+      const res=await fetch('/offers',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({product_name:productName,offer_price:offerPrice})})
+      const data=await res.json()
+      if(data.status==='created'){
+        status.innerHTML='<span style="color:var(--success)">✅ Offer started!</span>'
+        document.getElementById('offer-price').value=''
+        document.getElementById('offer-preview').style.display='none'
+        loadOffers()
+        setTimeout(()=>status.innerHTML='',2500)
+      } else {
+        status.innerHTML=`<span style="color:var(--danger)">${data.message||'Could not create offer'}</span>`
+      }
+    }
+    async function loadOffers(){
+      const res=await fetch('/offers/all'); const offers=await res.json()
+      const list=document.getElementById('offers-list')
+      const active=offers.filter(o=>o.active).length
+      document.getElementById('offers-count').innerText=`${offers.length} total · ${active} active`
+      if(!offers.length){list.innerHTML='<div class="empty-state"><div class="empty-icon">🏷️</div><div class="empty-title">No offers yet</div><div class="empty-sub">Create one above to show customers a deal</div></div>';return}
+      list.innerHTML=[...offers].reverse().map(o=>{
+        const pct=o.original_price?Math.round((1-o.offer_price/o.original_price)*100):0
+        return `<div class="offer-item ${o.active?'':'inactive'}">
+          ${o.image?`<img src="${o.image}" class="offer-thumb"/>`:'<div class="offer-thumb" style="display:flex;align-items:center;justify-content:center;font-size:22px;">🪑</div>'}
+          <div class="offer-info">
+            <div class="offer-name">${o.product_name}</div>
+            <div class="offer-pricing"><span class="offer-original">₹${(o.original_price||0).toLocaleString('en-IN')}</span><span class="offer-final">₹${o.offer_price.toLocaleString('en-IN')}</span><span class="offer-badge">${pct}% OFF</span></div>
+          </div>
+          <div class="offer-actions">
+            <button class="action-btn ${o.active?'action-btn-stock-out':'action-btn-stock-in'}" onclick="toggleOffer('${o.id}')">${o.active?'⏸ Pause':'▶️ Resume'}</button>
+            <button class="action-btn action-btn-delete" onclick="deleteOfferItem('${o.id}')">🗑 Delete</button>
+          </div>
+        </div>`
+      }).join('')
+    }
+    async function toggleOffer(id){await fetch(`/offers/${id}/toggle`,{method:'PATCH'});loadOffers()}
+    async function deleteOfferItem(id){if(!confirm('Remove this offer?'))return;await fetch(`/offers/${id}`,{method:'DELETE'});loadOffers()}
 
     let scanFile=null,detectedItems=[],itemStates=[]
     function onScanImageSelected(event){

@@ -177,6 +177,7 @@
       background: var(--white); border-radius: 16px; overflow: hidden;
       border: 1px solid rgba(201, 168, 76, 0.15); transition: all 0.3s ease;
       cursor: pointer; animation: fadeUp 0.5s ease both;
+      position: relative;
     }
     .product-card:hover { transform: translateY(-6px); box-shadow: 0 20px 48px rgba(61, 43, 31, 0.12); border-color: rgba(201, 168, 76, 0.4); }
 
@@ -187,7 +188,29 @@
     .product-desc { font-size: 13px; color: var(--text-light); margin-bottom: 12px; line-height: 1.5; }
     .product-price { font-size: 18px; font-weight: 700; color: var(--gold); }
     .product-price span { font-size: 12px; color: var(--text-light); font-weight: 400; }
+    .product-price-original { font-size: 13px; color: var(--text-light); text-decoration: line-through; font-weight: 400; margin-right: 8px; }
+    .product-offer-badge { position: absolute; top: 12px; left: 12px; background: #DC6E3F; color: #fff; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 100px; z-index: 2; }
     .out-of-stock-badge { font-size: 11px; background: #FEE2E2; color: #DC2626; padding: 3px 10px; border-radius: 100px; font-weight: 600; display: inline-block; margin-top: 6px; }
+
+    /* OFFERS */
+    .offers-section { padding: 60px 40px 0; }
+    .offers-scroll { display: flex; gap: 20px; overflow-x: auto; padding-bottom: 16px; scroll-snap-type: x mandatory; }
+    .offers-scroll::-webkit-scrollbar { height: 6px; }
+    .offers-scroll::-webkit-scrollbar-thumb { background: var(--gold-light); border-radius: 4px; }
+    .offer-card {
+      flex: 0 0 260px; scroll-snap-align: start;
+      background: var(--white); border: 1.5px solid rgba(220,110,63,0.25);
+      border-radius: 16px; overflow: hidden; cursor: pointer;
+      transition: all 0.3s ease; position: relative;
+    }
+    .offer-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(61,43,31,0.12); border-color: #DC6E3F; }
+    .offer-ribbon { position: absolute; top: 12px; left: 12px; background: #DC6E3F; color: #fff; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 100px; z-index: 2; }
+    .offer-card-img { width: 100%; height: 160px; object-fit: cover; background: var(--gray); display: flex; align-items: center; justify-content: center; font-size: 40px; }
+    .offer-card-body { padding: 16px; }
+    .offer-card-name { font-family: 'Playfair Display', serif; font-size: 15px; font-weight: 600; color: var(--brown); margin-bottom: 8px; }
+    .offer-card-pricing { display: flex; align-items: baseline; gap: 8px; }
+    .offer-card-original { font-size: 13px; color: var(--text-light); text-decoration: line-through; }
+    .offer-card-final { font-size: 19px; font-weight: 700; color: #DC6E3F; }
 
     /* WHY US */
     .why-section { background: var(--brown); padding: 100px 40px; }
@@ -434,6 +457,7 @@
       .nav-links { display: none; }
       .hero { padding: 100px 20px 60px; }
       .section { padding: 60px 20px; }
+      .offers-section { padding: 40px 20px 0; }
       .about-section { grid-template-columns: 1fr; padding: 60px 20px; gap: 40px; }
       .why-section { padding: 60px 20px; }
       .contact-section { padding: 60px 20px; }
@@ -490,6 +514,13 @@
         <div class="stat-item"><div class="stat-num">₹0</div><div class="stat-label">Delivery Charges</div></div>
       </div>
     </div>
+  </section>
+
+  <!-- OFFERS (owner-controlled, hidden if none active) -->
+  <section class="offers-section" id="offers-section" style="display:none;">
+    <div class="section-eyebrow">🔥 Limited Time</div>
+    <h2 class="section-title" style="margin-bottom:24px;">Ongoing Offers</h2>
+    <div class="offers-scroll" id="offers-scroll"></div>
   </section>
 
   <!-- PRODUCTS -->
@@ -625,6 +656,7 @@
     let customerName = ''
     let customerPhone = ''
     let catalogueCache = []
+    let offersCache = []
 
     // Hide tooltip after 4s
     setTimeout(() => { const t = document.getElementById('chat-tooltip'); if (t) t.style.display = 'none' }, 4000)
@@ -694,6 +726,15 @@
             const conf = document.createElement('div')
             conf.className = 'order-confirm'
             conf.innerHTML = `✅ <strong>Order #${data.order.id} placed!</strong><br/>We'll call you at ${customerPhone} shortly.`
+            document.getElementById('drawer-messages').appendChild(conf)
+            scrollDrawer()
+          }, 400)
+        }
+        if (data.callback) {
+          setTimeout(() => {
+            const conf = document.createElement('div')
+            conf.className = 'order-confirm'
+            conf.innerHTML = `📞 <strong>Callback scheduled!</strong><br/>Our team will call you at ${customerPhone}${data.callback.requested_time ? ' — ' + data.callback.requested_time : ' shortly'}.`
             document.getElementById('drawer-messages').appendChild(conf)
             scrollDrawer()
           }, 400)
@@ -849,9 +890,37 @@
       }
     }
 
-    // Load products
+    // ── Ongoing offers banner (owner-controlled) ────────────────
+    async function loadOffers() {
+      try {
+        const res = await fetch('/offers')
+        const offers = await res.json()
+        offersCache = offers
+        const section = document.getElementById('offers-section')
+        const scroll = document.getElementById('offers-scroll')
+        if (!offers.length) { section.style.display = 'none'; return }
+        section.style.display = 'block'
+        scroll.innerHTML = offers.map(o => `
+          <div class="offer-card" onclick="openChatProduct('${o.product_name}')">
+            <div class="offer-ribbon">${o.discount_pct}% OFF</div>
+            ${o.image ? `<img src="${o.image}" class="offer-card-img" alt="${o.product_name}"/>` : `<div class="offer-card-img">🪑</div>`}
+            <div class="offer-card-body">
+              <div class="offer-card-name">${o.product_name}</div>
+              <div class="offer-card-pricing">
+                <span class="offer-card-original">₹${Number(o.original_price).toLocaleString('en-IN')}</span>
+                <span class="offer-card-final">₹${Number(o.offer_price).toLocaleString('en-IN')}</span>
+              </div>
+            </div>
+          </div>
+        `).join('')
+      } catch (e) {
+        // Offers are optional — fail silently so the page still works
+      }
+    }
+
+    // Load products (uses the cost-price-safe public endpoint)
     async function loadProducts() {
-      const res = await fetch('/catalogue')
+      const res = await fetch('/catalogue/public')
       const products = await res.json()
       catalogueCache = products
       const grid = document.getElementById('products-grid')
@@ -861,19 +930,26 @@
         return
       }
 
-      grid.innerHTML = products.map((p, i) => `
+      grid.innerHTML = products.map((p, i) => {
+        const offer = offersCache.find(o => o.product_name === p.name)
+        return `
         <div class="product-card reveal" style="animation-delay:${i * 0.08}s" onclick="openChatProduct('${p.name}')">
+          ${offer ? `<div class="product-offer-badge">${offer.discount_pct}% OFF</div>` : ''}
           <div class="product-img">
             ${p.image ? `<img src="${p.image}" alt="${p.name}"/>` : `<span>🪑</span>`}
           </div>
           <div class="product-info">
             <div class="product-name">${p.name}</div>
             <div class="product-desc">${p.description}</div>
-            <div class="product-price">₹${p.price.toLocaleString('en-IN')} <span>onwards</span></div>
+            <div class="product-price">
+              ${offer
+                ? `<span class="product-price-original">₹${Number(offer.original_price).toLocaleString('en-IN')}</span>₹${Number(offer.offer_price).toLocaleString('en-IN')}`
+                : `₹${p.price.toLocaleString('en-IN')} <span>onwards</span>`}
+            </div>
             ${p.out_of_stock ? '<div class="out-of-stock-badge">Currently Unavailable</div>' : ''}
           </div>
-        </div>
-      `).join('')
+        </div>`
+      }).join('')
 
       setTimeout(checkReveal, 100)
     }
@@ -894,7 +970,14 @@
     }
 
     window.addEventListener('scroll', checkReveal)
-    loadProducts()
+
+    // Load offers first so product cards can show matching discount badges,
+    // then load products.
+    async function initPage() {
+      await loadOffers()
+      await loadProducts()
+    }
+    initPage()
     setTimeout(checkReveal, 200)
   </script>
 </body>
