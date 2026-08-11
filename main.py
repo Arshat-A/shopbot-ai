@@ -12,6 +12,8 @@ import base64
 import qrcode
 import io
 import time
+import cloudinary
+import cloudinary.uploader
 from collections import defaultdict
 from fastapi.responses import StreamingResponse
 from datetime import datetime
@@ -29,6 +31,20 @@ UPLOAD_DIR = "static/uploads"
 OWNER_PASSWORD = "royal123"
 
 os.makedirs(UPLOAD_DIR, exist_ok=True)
+
+# ── Cloudinary (persistent image storage) ────────────────────────
+# Render's free tier wipes the local filesystem on every restart/redeploy,
+# so images saved to disk disappear. Cloudinary gives every uploaded photo
+# a permanent CDN URL that survives restarts. If these env vars aren't set
+# (e.g. running locally without a Cloudinary account yet), save_upload()
+# falls back to local disk — fine for quick local testing, NOT for Render.
+cloudinary.config(
+    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME", ""),
+    api_key=os.getenv("CLOUDINARY_API_KEY", ""),
+    api_secret=os.getenv("CLOUDINARY_API_SECRET", ""),
+    secure=True
+)
+CLOUDINARY_ENABLED = bool(os.getenv("CLOUDINARY_CLOUD_NAME"))
 
 client = Groq(api_key=GROQ_API_KEY)
 
@@ -141,12 +157,46 @@ def is_rate_limited(key: str) -> bool:
 MAX_HISTORY_MESSAGES = 12
 
 def save_upload(file) -> str:
-    ext = file.filename.split(".")[-1].lower()
-    filename = f"{uuid.uuid4().hex}.{ext}"
-    filepath = os.path.join(UPLOAD_DIR, filename)
-    with open(filepath, "wb") as f:
-        shutil.copyfileobj(file.file, f)
-    return f"/static/uploads/{filename}"
+    """Returns a persistent URL for the uploaded image.
+    Uses Cloudinary when configured (required on Render — local disk doesn't survive
+    restarts there). Falls back to local disk only if Cloudinary env vars are missing,
+    which is fine for quick local testing but will NOT persist on Render."""
+    if CLOUDINARY_ENABLED:
+        result = cloudinary.uploader.upload(
+            file.file,
+            folder="royal_enterprises",
+            resource_type="image"
+        )
+        return result["secure_url"]
+    else:
+        ext = file.filename.split(".")[-1].lower()
+        filename = f"{uuid.uuid4().hex}.{ext}"
+        filepath = os.path.join(UPLOAD_DIR, filename)
+        with open(filepath, "wb") as f:
+            shutil.copyfileobj(file.file, f)
+        return f"/static/uploads/{filename}"
+
+def delete_upload(url: str):
+    """Best-effort cleanup for an image, whether it's on Cloudinary or local disk.
+    Never raises — a failed cleanup shouldn't block the actual catalogue edit."""
+    if not url:
+        return
+    try:
+        if "cloudinary.com" in url:
+            # Extract the public_id from a Cloudinary URL, e.g.
+            # https://res.cloudinary.com/<cloud>/image/upload/v169.../royal_enterprises/abc123.jpg
+            # -> public_id = royal_enterprises/abc123
+            after_upload = url.split("/upload/")[-1]
+            parts = after_upload.split("/", 1)
+            path_part = parts[1] if len(parts) > 1 else parts[0]
+            public_id = path_part.rsplit(".", 1)[0]
+            cloudinary.uploader.destroy(public_id)
+        else:
+            path = url.lstrip("/")
+            if os.path.exists(path):
+                os.remove(path)
+    except Exception:
+        pass  # non-critical — orphaned image, not worth failing the request over
 
 def strip_thinking(raw: str) -> str:
     """Remove Qwen's <think>...</think> block from a raw model response."""
@@ -273,13 +323,9 @@ def delete_product(index: int):
     if 0 <= index < len(catalogue):
         product = catalogue[index]
         for url in product.get("images", []):
-            path = url.lstrip("/")
-            if os.path.exists(path):
-                os.remove(path)
+            delete_upload(url)
         if product.get("image") and product["image"] not in product.get("images", []):
-            path = product["image"].lstrip("/")
-            if os.path.exists(path):
-                os.remove(path)
+            delete_upload(product["image"])
         catalogue.pop(index)
         save_catalogue(catalogue)
         return {"status": "deleted"}
@@ -331,9 +377,7 @@ async def edit_product(
         if new_images:
             # Delete old images
             for url in existing.get("images", []):
-                path = url.lstrip("/")
-                if os.path.exists(path):
-                    os.remove(path)
+                delete_upload(url)
             existing["images"] = new_images
             existing["image"] = new_images[0]
 
@@ -381,9 +425,7 @@ def delete_product_image(index: int, img_index: int):
         if catalogue[index].get("image") and not images:
             images = [catalogue[index]["image"]]
         if 0 <= img_index < len(images):
-            path = images[img_index].lstrip("/")
-            if os.path.exists(path):
-                os.remove(path)
+            delete_upload(images[img_index])
             images.pop(img_index)
             catalogue[index]["images"] = images
             catalogue[index]["image"] = images[0] if images else None
