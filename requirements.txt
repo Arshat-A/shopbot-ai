@@ -7,3 +7,5 @@ uvicorn
 groq
 python-multipart
 qrcode[pil]
+cloudinary
+cloudinary==1.45.0
