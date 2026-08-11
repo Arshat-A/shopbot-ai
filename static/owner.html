@@ -80,7 +80,8 @@
     .form-input:focus { border-color:var(--gold); background:var(--white); }
 
     /* MULTI PHOTO */
-    .photo-upload-area { border:2px dashed rgba(201,168,76,0.3); border-radius:12px; padding:16px; background:var(--cream); }
+    .photo-upload-area { border:2px dashed rgba(201,168,76,0.3); border-radius:12px; padding:16px; background:var(--cream); transition:all 0.2s; }
+    .photo-upload-area.dragover { border-color:var(--gold); background:rgba(201,168,76,0.12); }
     .photo-upload-btn { display:flex; align-items:center; justify-content:center; gap:8px; background:var(--brown); color:var(--gold); border:none; border-radius:10px; padding:12px; font-size:14px; font-weight:600; font-family:'Inter',sans-serif; cursor:pointer; width:100%; margin-bottom:12px; }
     .photo-previews { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
     .photo-preview-item { position:relative; aspect-ratio:1; }
@@ -452,11 +453,11 @@
             <div class="form-group"><label class="form-label">Description</label><input id="p-desc" class="form-input" type="text" placeholder="Size, material, color options"/></div>
             <div class="form-group">
               <label class="form-label">Photos (up to 5)</label>
-              <div class="photo-upload-area">
+              <div class="photo-upload-area" id="p-photo-dropzone">
                 <button type="button" class="photo-upload-btn" onclick="document.getElementById('p-images').click()">📷 Add Photos</button>
-                <input id="p-images" type="file" accept="image/*" multiple capture="environment" style="display:none" onchange="previewNewPhotos(event)"/>
+                <input id="p-images" type="file" accept="image/*" multiple style="display:none" onchange="previewNewPhotos(event)"/>
                 <div class="photo-previews" id="new-photo-previews"></div>
-                <div class="photo-hint">First photo = main photo shown to customers</div>
+                <div class="photo-hint">Drag &amp; drop photos here, or tap to choose from camera or gallery · First photo = main photo shown to customers</div>
               </div>
             </div>
             <button class="submit-btn" onclick="addProduct()">Add to Catalogue</button>
@@ -583,10 +584,11 @@
       <div class="form-group"><label class="form-label">Description</label><input id="edit-desc" class="form-input" type="text"/></div>
       <div class="form-group">
         <label class="form-label">Add More Photos</label>
-        <div class="photo-upload-area">
+        <div class="photo-upload-area" id="edit-photo-dropzone">
           <button type="button" class="photo-upload-btn" onclick="document.getElementById('edit-images').click()">📷 Add Photos</button>
-          <input id="edit-images" type="file" accept="image/*" multiple capture="environment" style="display:none" onchange="previewEditPhotos(event)"/>
+          <input id="edit-images" type="file" accept="image/*" multiple style="display:none" onchange="previewEditPhotos(event)"/>
           <div class="photo-previews" id="edit-photo-previews"></div>
+          <div class="photo-hint">Drag &amp; drop photos here, or tap to choose from camera or gallery</div>
         </div>
       </div>
       <div class="modal-actions">
@@ -726,15 +728,22 @@
 
     /* ── CATALOGUE (manual add) ───────────────────────────────── */
     let newPhotoFiles=[]
-    function previewNewPhotos(event) {
-      const files=Array.from(event.target.files).slice(0,5); newPhotoFiles=files
+    function renderNewPhotoPreviews(){
       const c=document.getElementById('new-photo-previews')
-      c.innerHTML=files.map((f,i)=>`<div class="photo-preview-item"><img src="${URL.createObjectURL(f)}"/>${i===0?'<div class="main-badge">MAIN</div>':''}<button class="photo-preview-delete" onclick="removeNewPhoto(${i})">×</button></div>`).join('')
+      c.innerHTML=newPhotoFiles.map((f,i)=>`<div class="photo-preview-item"><img src="${URL.createObjectURL(f)}"/>${i===0?'<div class="main-badge">MAIN</div>':''}<button class="photo-preview-delete" onclick="removeNewPhoto(${i})">×</button></div>`).join('')
+    }
+    function addNewPhotoFiles(fileList){
+      const imgFiles=Array.from(fileList).filter(f=>f.type.startsWith('image/'))
+      newPhotoFiles=[...newPhotoFiles, ...imgFiles].slice(0,5)
+      renderNewPhotoPreviews()
+    }
+    function previewNewPhotos(event) {
+      addNewPhotoFiles(event.target.files)
+      event.target.value='' // allow picking the same file again later
     }
     function removeNewPhoto(index) {
       newPhotoFiles.splice(index,1)
-      const c=document.getElementById('new-photo-previews')
-      c.innerHTML=newPhotoFiles.map((f,i)=>`<div class="photo-preview-item"><img src="${URL.createObjectURL(f)}"/>${i===0?'<div class="main-badge">MAIN</div>':''}<button class="photo-preview-delete" onclick="removeNewPhoto(${i})">×</button></div>`).join('')
+      renderNewPhotoPreviews()
     }
 
     async function addProduct() {
@@ -797,15 +806,22 @@
     async function deleteProduct(index){if(!confirm('Remove this product?'))return;await fetch(`/catalogue/${index}`,{method:'DELETE'});loadProducts();loadStats()}
 
     let editPhotoFiles=[]
-    function previewEditPhotos(event){
-      const files=Array.from(event.target.files); editPhotoFiles=files
+    function renderEditPhotoPreviews(){
       const c=document.getElementById('edit-photo-previews')
-      c.innerHTML=files.map((f,i)=>`<div class="photo-preview-item"><img src="${URL.createObjectURL(f)}"/><button class="photo-preview-delete" onclick="removeEditPhoto(${i})">×</button></div>`).join('')
+      c.innerHTML=editPhotoFiles.map((f,i)=>`<div class="photo-preview-item"><img src="${URL.createObjectURL(f)}"/><button class="photo-preview-delete" onclick="removeEditPhoto(${i})">×</button></div>`).join('')
+    }
+    function addEditPhotoFiles(fileList){
+      const imgFiles=Array.from(fileList).filter(f=>f.type.startsWith('image/'))
+      editPhotoFiles=[...editPhotoFiles, ...imgFiles]
+      renderEditPhotoPreviews()
+    }
+    function previewEditPhotos(event){
+      addEditPhotoFiles(event.target.files)
+      event.target.value=''
     }
     function removeEditPhoto(index){
       editPhotoFiles.splice(index,1)
-      const c=document.getElementById('edit-photo-previews')
-      c.innerHTML=editPhotoFiles.map((f,i)=>`<div class="photo-preview-item"><img src="${URL.createObjectURL(f)}"/><button class="photo-preview-delete" onclick="removeEditPhoto(${i})">×</button></div>`).join('')
+      renderEditPhotoPreviews()
     }
 
     function openEdit(index){
@@ -1108,6 +1124,35 @@
       win.document.write(`<html><head><title>Royal Enterprises QR</title><style>body{font-family:'Inter',sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;margin:0;background:#FDF6ED;}img{width:280px;height:280px;border:3px solid #3D2B1F;border-radius:16px;margin-bottom:20px;}h2{font-family:Georgia,serif;color:#3D2B1F;margin-bottom:8px;font-size:24px;}p{color:#8B6F5E;font-size:14px;margin:4px 0;}.url{color:#C9A84C;font-size:12px;margin-top:12px;}</style></head><body><img src="/generate-qr"/><h2>Royal Enterprises</h2><p>📍 Dommasandra, Sarjapur Road, Bangalore</p><p>Scan to browse our catalogue & order furniture</p><p class="url">shopbot-ai-1009.onrender.com</p><script>window.onload=()=>window.print()<\/script></body></html>`)
       win.document.close()
     }
+
+    /* ── Drag & drop for photo upload zones (desktop) ─────────── */
+    function setupDropzone(zoneId, onFilesDropped){
+      const zone=document.getElementById(zoneId)
+      if(!zone) return
+      ;['dragenter','dragover'].forEach(evt=>{
+        zone.addEventListener(evt, e=>{
+          e.preventDefault(); e.stopPropagation()
+          zone.classList.add('dragover')
+        })
+      })
+      ;['dragleave','drop'].forEach(evt=>{
+        zone.addEventListener(evt, e=>{
+          e.preventDefault(); e.stopPropagation()
+          zone.classList.remove('dragover')
+        })
+      })
+      zone.addEventListener('drop', e=>{
+        if(e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length){
+          onFilesDropped(e.dataTransfer.files)
+        }
+      })
+    }
+    // Prevent the browser from navigating away if a photo is dropped outside a dropzone
+    window.addEventListener('dragover', e=>e.preventDefault())
+    window.addEventListener('drop', e=>e.preventDefault())
+
+    setupDropzone('p-photo-dropzone', addNewPhotoFiles)
+    setupDropzone('edit-photo-dropzone', addEditPhotoFiles)
   </script>
 </body>
 </html>

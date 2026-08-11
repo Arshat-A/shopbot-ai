@@ -369,6 +369,7 @@
       margin-bottom: 10px;
     }
     .vs-upload-zone:hover { border-color: var(--gold); background: rgba(201,168,76,0.04); }
+    .vs-upload-zone.dragover { border-color: var(--gold); background: rgba(201,168,76,0.1); }
     .vs-upload-text { font-size: 12px; color: var(--text-light); margin-top: 4px; }
 
     .vs-preview {
@@ -794,15 +795,28 @@
       panel.className = 'visual-search-msg'
       panel.innerHTML = `
         <div class="visual-search-msg-title">📷 Search by Photo</div>
-        <div class="vs-upload-zone" onclick="document.getElementById('vs-file-input').click()">
+        <div class="vs-upload-zone" id="vs-upload-zone" onclick="document.getElementById('vs-file-input').click()">
           <div style="font-size:28px;">📸</div>
-          <div class="vs-upload-text">Click to upload a furniture photo<br/>AI will find the closest match</div>
+          <div class="vs-upload-text">Drag &amp; drop a photo here, or click to choose<br/>from camera or gallery — AI will find the closest match</div>
         </div>
         <img id="vs-preview" class="vs-preview" alt="preview"/>
         <button class="vs-search-btn" id="vs-search-btn" onclick="runVisualSearch()" disabled>🔍 Find Similar Furniture</button>
       `
       box.appendChild(panel)
       scrollDrawer()
+
+      // Wire drag & drop on this freshly-created zone
+      const zone = document.getElementById('vs-upload-zone')
+      ;['dragenter','dragover'].forEach(evt => zone.addEventListener(evt, e => {
+        e.preventDefault(); e.stopPropagation(); zone.classList.add('dragover')
+      }))
+      ;['dragleave','drop'].forEach(evt => zone.addEventListener(evt, e => {
+        e.preventDefault(); e.stopPropagation(); zone.classList.remove('dragover')
+      }))
+      zone.addEventListener('drop', e => {
+        const file = e.dataTransfer?.files?.[0]
+        if (file && file.type.startsWith('image/')) handleVsFile(file)
+      })
     }
 
     // Opens visual search from product page banner
@@ -816,9 +830,8 @@
       openVisualSearchInChat()
     }
 
-    function onVsFileSelected(event) {
-      vsFile = event.target.files[0]
-      if (!vsFile) return
+    function handleVsFile(file) {
+      vsFile = file
       const preview = document.getElementById('vs-preview')
       if (preview) {
         preview.src = URL.createObjectURL(vsFile)
@@ -826,6 +839,12 @@
       }
       const btn = document.getElementById('vs-search-btn')
       if (btn) btn.disabled = false
+    }
+
+    function onVsFileSelected(event) {
+      const file = event.target.files[0]
+      if (!file) return
+      handleVsFile(file)
       // Reset input so same file can be selected again
       document.getElementById('vs-file-input').value = ''
     }
@@ -970,6 +989,10 @@
     }
 
     window.addEventListener('scroll', checkReveal)
+
+    // Prevent the browser from navigating away if a photo is dropped outside the vs-upload-zone
+    window.addEventListener('dragover', e => e.preventDefault())
+    window.addEventListener('drop', e => e.preventDefault())
 
     // Load offers first so product cards can show matching discount badges,
     // then load products.
